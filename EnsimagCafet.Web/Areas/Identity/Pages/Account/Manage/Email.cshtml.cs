@@ -56,35 +56,6 @@ namespace EnsimagCafet.Web.Areas.Identity.Pages.Account.Manage
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public class InputModel
-        {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Required]
-            [EmailAddress]
-            [Display(Name = "New email")]
-            public string NewEmail { get; set; }
-        }
-
-        private async Task LoadAsync(User user)
-        {
-            string email = await _userManager.GetEmailAsync(user);
-            Email = email;
-
-            Input = new InputModel
-            {
-                NewEmail = email,
-            };
-
-            IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
-        }
-
         public async Task<IActionResult> OnGetAsync()
         {
             User user = await _userManager.GetUserAsync(User);
@@ -165,6 +136,35 @@ namespace EnsimagCafet.Web.Areas.Identity.Pages.Account.Manage
 
             StatusMessage = "Verification email sent. Please check your email.";
             return RedirectToPage();
+        }
+
+        private async Task LoadAsync(User user)
+        {
+            string email = await _userManager.GetEmailAsync(user);
+            Email = email;
+
+            Input = new InputModel
+            {
+                NewEmail = email,
+            };
+
+            IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+        }
+
+        /// <summary>
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        public class InputModel
+        {
+            /// <summary>
+            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+            ///     directly from your code. This API may change or be removed in future releases.
+            /// </summary>
+            [Required]
+            [EmailAddress]
+            [Display(Name = "New email")]
+            public string NewEmail { get; set; }
         }
     }
 }

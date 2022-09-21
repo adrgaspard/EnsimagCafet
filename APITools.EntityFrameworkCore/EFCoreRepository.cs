@@ -8,9 +8,8 @@ namespace APITools.EntityFrameworkCore
 {
     public sealed class EFCoreRepository<TEntity, TKey> : Repository<TEntity, TKey> where TEntity : class, IEntity<TKey> where TKey : IEquatable<TKey>
     {
-        private readonly IDbContextProvider _contextProvider;
-
         private const string NullDbContext = "The DbContext was null.";
+        private readonly IDbContextProvider _contextProvider;
 
         public EFCoreRepository(IDbContextProvider contextProvider)
         {
@@ -18,7 +17,7 @@ namespace APITools.EntityFrameworkCore
             _contextProvider = contextProvider;
         }
 
-        public override async Task<Result> DeleteManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
+        public override async Task<Result<TEntity>> GetOneAsync(TKey id, CancellationToken cancellationToken = default)
         {
             Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
             if (fetchContext.IsSuccess)
@@ -27,22 +26,7 @@ namespace APITools.EntityFrameworkCore
                 try
                 {
                     DbSet<TEntity> set = context.Set<TEntity>();
-                    if (_entityTypeIsDeletedProperty is null)
-                    {
-                        set.RemoveRange(entities);
-                    }
-                    else
-                    {
-                        foreach (TEntity entity in entities)
-                        {
-                            _entityTypeIsDeletedProperty.SetValue(entity, true);
-                            _entityTypeDeletionTimeProperty?.SetValue(entity, DateTime.UtcNow);
-                        }
-                    }
-                    if (autoSave)
-                    {
-                        _ = await context.SaveChangesAsync(cancellationToken);
-                    }
+                    return await set.FirstAsync(entity => entity.Id.Equals(id), cancellationToken);
                 }
                 catch (Exception exception)
                 {
@@ -52,7 +36,7 @@ namespace APITools.EntityFrameworkCore
             return new NullReferenceException(NullDbContext, fetchContext.Exception);
         }
 
-        public override async Task<Result> DeleteOneAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
+        public override async Task<Result<TEntity>> GetOneAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
         {
             Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
             if (fetchContext.IsSuccess)
@@ -61,19 +45,7 @@ namespace APITools.EntityFrameworkCore
                 try
                 {
                     DbSet<TEntity> set = context.Set<TEntity>();
-                    if (_entityTypeIsDeletedProperty is null)
-                    {
-                        _ = set.Remove(entity);
-                    }
-                    else
-                    {
-                        _entityTypeIsDeletedProperty.SetValue(entity, true);
-                        _entityTypeDeletionTimeProperty?.SetValue(entity, DateTime.UtcNow);
-                    }
-                    if (autoSave)
-                    {
-                        _ = await context.SaveChangesAsync(cancellationToken);
-                    }
+                    return await set.FirstAsync(predicate, cancellationToken);
                 }
                 catch (Exception exception)
                 {
@@ -83,7 +55,7 @@ namespace APITools.EntityFrameworkCore
             return new NullReferenceException(NullDbContext, fetchContext.Exception);
         }
 
-        public override async Task<Result<long>> GetCountAsync(CancellationToken cancellationToken = default)
+        public override async Task<Result<TEntity?>> GetOneOrDefaultAsync(TKey id, CancellationToken cancellationToken = default)
         {
             Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
             if (fetchContext.IsSuccess)
@@ -92,7 +64,7 @@ namespace APITools.EntityFrameworkCore
                 try
                 {
                     DbSet<TEntity> set = context.Set<TEntity>();
-                    return await set.CountAsync(cancellationToken);
+                    return await set.FirstOrDefaultAsync(entity => entity.Id.Equals(id), cancellationToken);
                 }
                 catch (Exception exception)
                 {
@@ -102,7 +74,7 @@ namespace APITools.EntityFrameworkCore
             return new NullReferenceException(NullDbContext, fetchContext.Exception);
         }
 
-        public override async Task<Result<long>> GetCountAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        public override async Task<Result<TEntity?>> GetOneOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
         {
             Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
             if (fetchContext.IsSuccess)
@@ -111,7 +83,83 @@ namespace APITools.EntityFrameworkCore
                 try
                 {
                     DbSet<TEntity> set = context.Set<TEntity>();
-                    return await set.CountAsync(predicate, cancellationToken);
+                    return await set.FirstOrDefaultAsync(predicate, cancellationToken);
+                }
+                catch (Exception exception)
+                {
+                    return exception;
+                }
+            }
+            return new NullReferenceException(NullDbContext, fetchContext.Exception);
+        }
+
+        public override async Task<Result<TEntity>> GetSingleAsync(TKey id, CancellationToken cancellationToken = default)
+        {
+            Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
+            if (fetchContext.IsSuccess)
+            {
+                DbContext context = fetchContext.Value;
+                try
+                {
+                    DbSet<TEntity> set = context.Set<TEntity>();
+                    return await set.SingleAsync(entity => entity.Id.Equals(id), cancellationToken);
+                }
+                catch (Exception exception)
+                {
+                    return exception;
+                }
+            }
+            return new NullReferenceException(NullDbContext, fetchContext.Exception);
+        }
+
+        public override async Task<Result<TEntity>> GetSingleAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        {
+            Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
+            if (fetchContext.IsSuccess)
+            {
+                DbContext context = fetchContext.Value;
+                try
+                {
+                    DbSet<TEntity> set = context.Set<TEntity>();
+                    return await set.SingleAsync(predicate, cancellationToken);
+                }
+                catch (Exception exception)
+                {
+                    return exception;
+                }
+            }
+            return new NullReferenceException(NullDbContext, fetchContext.Exception);
+        }
+
+        public override async Task<Result<TEntity?>> GetSingleOrDefaultAsync(TKey id, CancellationToken cancellationToken = default)
+        {
+            Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
+            if (fetchContext.IsSuccess)
+            {
+                DbContext context = fetchContext.Value;
+                try
+                {
+                    DbSet<TEntity> set = context.Set<TEntity>();
+                    return await set.SingleOrDefaultAsync(entity => entity.Id.Equals(id), cancellationToken);
+                }
+                catch (Exception exception)
+                {
+                    return exception;
+                }
+            }
+            return new NullReferenceException(NullDbContext, fetchContext.Exception);
+        }
+
+        public override async Task<Result<TEntity?>> GetSingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        {
+            Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
+            if (fetchContext.IsSuccess)
+            {
+                DbContext context = fetchContext.Value;
+                try
+                {
+                    DbSet<TEntity> set = context.Set<TEntity>();
+                    return await set.SingleOrDefaultAsync(predicate, cancellationToken);
                 }
                 catch (Exception exception)
                 {
@@ -273,7 +321,7 @@ namespace APITools.EntityFrameworkCore
             return new NullReferenceException(NullDbContext, fetchContext.Exception);
         }
 
-        public override async Task<Result<TEntity>> GetOneAsync(TKey id, CancellationToken cancellationToken = default)
+        public override async Task<Result<long>> GetCountAsync(CancellationToken cancellationToken = default)
         {
             Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
             if (fetchContext.IsSuccess)
@@ -282,7 +330,7 @@ namespace APITools.EntityFrameworkCore
                 try
                 {
                     DbSet<TEntity> set = context.Set<TEntity>();
-                    return await set.FirstAsync(entity => entity.Id.Equals(id), cancellationToken);
+                    return await set.CountAsync(cancellationToken);
                 }
                 catch (Exception exception)
                 {
@@ -292,7 +340,7 @@ namespace APITools.EntityFrameworkCore
             return new NullReferenceException(NullDbContext, fetchContext.Exception);
         }
 
-        public override async Task<Result<TEntity>> GetOneAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        public override async Task<Result<long>> GetCountAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
         {
             Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
             if (fetchContext.IsSuccess)
@@ -301,7 +349,7 @@ namespace APITools.EntityFrameworkCore
                 try
                 {
                     DbSet<TEntity> set = context.Set<TEntity>();
-                    return await set.FirstAsync(predicate, cancellationToken);
+                    return await set.CountAsync(predicate, cancellationToken);
                 }
                 catch (Exception exception)
                 {
@@ -311,7 +359,7 @@ namespace APITools.EntityFrameworkCore
             return new NullReferenceException(NullDbContext, fetchContext.Exception);
         }
 
-        public override async Task<Result<TEntity?>> GetOneOrDefaultAsync(TKey id, CancellationToken cancellationToken = default)
+        public override async Task<Result<TEntity>> InsertOneAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
         {
             Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
             if (fetchContext.IsSuccess)
@@ -320,144 +368,11 @@ namespace APITools.EntityFrameworkCore
                 try
                 {
                     DbSet<TEntity> set = context.Set<TEntity>();
-                    return await set.FirstOrDefaultAsync(entity => entity.Id.Equals(id), cancellationToken);
-                }
-                catch (Exception exception)
-                {
-                    return exception;
-                }
-            }
-            return new NullReferenceException(NullDbContext, fetchContext.Exception);
-        }
-
-        public override async Task<Result<TEntity?>> GetOneOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
-        {
-            Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
-            if (fetchContext.IsSuccess)
-            {
-                DbContext context = fetchContext.Value;
-                try
-                {
-                    DbSet<TEntity> set = context.Set<TEntity>();
-                    return await set.FirstOrDefaultAsync(predicate, cancellationToken);
-                }
-                catch (Exception exception)
-                {
-                    return exception;
-                }
-            }
-            return new NullReferenceException(NullDbContext, fetchContext.Exception);
-        }
-
-        public override async Task<Result<TEntity>> GetSingleAsync(TKey id, CancellationToken cancellationToken = default)
-        {
-            Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
-            if (fetchContext.IsSuccess)
-            {
-                DbContext context = fetchContext.Value;
-                try
-                {
-                    DbSet<TEntity> set = context.Set<TEntity>();
-                    return await set.SingleAsync(entity => entity.Id.Equals(id), cancellationToken);
-                }
-                catch (Exception exception)
-                {
-                    return exception;
-                }
-            }
-            return new NullReferenceException(NullDbContext, fetchContext.Exception);
-        }
-
-        public override async Task<Result<TEntity>> GetSingleAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
-        {
-            Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
-            if (fetchContext.IsSuccess)
-            {
-                DbContext context = fetchContext.Value;
-                try
-                {
-                    DbSet<TEntity> set = context.Set<TEntity>();
-                    return await set.SingleAsync(predicate, cancellationToken);
-                }
-                catch (Exception exception)
-                {
-                    return exception;
-                }
-            }
-            return new NullReferenceException(NullDbContext, fetchContext.Exception);
-        }
-
-        public override async Task<Result<TEntity?>> GetSingleOrDefaultAsync(TKey id, CancellationToken cancellationToken = default)
-        {
-            Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
-            if (fetchContext.IsSuccess)
-            {
-                DbContext context = fetchContext.Value;
-                try
-                {
-                    DbSet<TEntity> set = context.Set<TEntity>();
-                    return await set.SingleOrDefaultAsync(entity => entity.Id.Equals(id), cancellationToken);
-                }
-                catch (Exception exception)
-                {
-                    return exception;
-                }
-            }
-            return new NullReferenceException(NullDbContext, fetchContext.Exception);
-        }
-
-        public override async Task<Result<TEntity?>> GetSingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
-        {
-            Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
-            if (fetchContext.IsSuccess)
-            {
-                DbContext context = fetchContext.Value;
-                try
-                {
-                    DbSet<TEntity> set = context.Set<TEntity>();
-                    return await set.SingleOrDefaultAsync(predicate, cancellationToken);
-                }
-                catch (Exception exception)
-                {
-                    return exception;
-                }
-            }
-            return new NullReferenceException(NullDbContext, fetchContext.Exception);
-        }
-
-        public override async Task<Result> HardDeleteManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
-        {
-            Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
-            if (fetchContext.IsSuccess)
-            {
-                DbContext context = fetchContext.Value;
-                try
-                {
-                    DbSet<TEntity> set = context.Set<TEntity>();
-                    set.RemoveRange(entities);
-                    if (autoSave)
-                    {
-                        _ = await context.SaveChangesAsync(cancellationToken);
-                    }
-                }
-                catch (Exception exception)
-                {
-                    return exception;
-                }
-            }
-            return new NullReferenceException(NullDbContext, fetchContext.Exception);
-        }
-
-        public override async Task<Result> HardDeleteOneAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
-        {
-            Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
-            if (fetchContext.IsSuccess)
-            {
-                DbContext context = fetchContext.Value;
-                try
-                {
-                    DbSet<TEntity> set = context.Set<TEntity>();
-                    set.RemoveRange(entity);
+                    _ = await set.AddAsync(entity, cancellationToken);
+                    _entityTypeCreationTimeProperty?.SetValue(entity, DateTime.Now);
+                    _entityTypeModificationTimeProperty?.SetValue(entity, null);
+                    _entityTypeIsDeletedProperty?.SetValue(entity, false);
+                    _entityTypeDeletionTimeProperty?.SetValue(entity, null);
                     if (autoSave)
                     {
                         _ = await context.SaveChangesAsync(cancellationToken);
@@ -501,7 +416,7 @@ namespace APITools.EntityFrameworkCore
             return new NullReferenceException(NullDbContext, fetchContext.Exception);
         }
 
-        public override async Task<Result<TEntity>> InsertOneAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
+        public override async Task<Result> UpdateOneAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
         {
             Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
             if (fetchContext.IsSuccess)
@@ -510,34 +425,12 @@ namespace APITools.EntityFrameworkCore
                 try
                 {
                     DbSet<TEntity> set = context.Set<TEntity>();
-                    _ = await set.AddAsync(entity, cancellationToken);
-                    _entityTypeCreationTimeProperty?.SetValue(entity, DateTime.Now);
-                    _entityTypeModificationTimeProperty?.SetValue(entity, null);
-                    _entityTypeIsDeletedProperty?.SetValue(entity, false);
-                    _entityTypeDeletionTimeProperty?.SetValue(entity, null);
+                    _ = set.Update(entity);
+                    _entityTypeModificationTimeProperty?.SetValue(entity, DateTime.UtcNow);
                     if (autoSave)
                     {
                         _ = await context.SaveChangesAsync(cancellationToken);
                     }
-                }
-                catch (Exception exception)
-                {
-                    return exception;
-                }
-            }
-            return new NullReferenceException(NullDbContext, fetchContext.Exception);
-        }
-
-        public override async Task<Result> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
-            if (fetchContext.IsSuccess)
-            {
-                DbContext context = fetchContext.Value;
-                try
-                {
-                    _ = await context.SaveChangesAsync(cancellationToken);
-                    return Result.Success();
                 }
                 catch (Exception exception)
                 {
@@ -574,7 +467,7 @@ namespace APITools.EntityFrameworkCore
             return new NullReferenceException(NullDbContext, fetchContext.Exception);
         }
 
-        public override async Task<Result> UpdateOneAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
+        public override async Task<Result> DeleteOneAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
         {
             Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
             if (fetchContext.IsSuccess)
@@ -583,12 +476,118 @@ namespace APITools.EntityFrameworkCore
                 try
                 {
                     DbSet<TEntity> set = context.Set<TEntity>();
-                    _ = set.Update(entity);
-                    _entityTypeModificationTimeProperty?.SetValue(entity, DateTime.UtcNow);
+                    if (_entityTypeIsDeletedProperty is null)
+                    {
+                        _ = set.Remove(entity);
+                    }
+                    else
+                    {
+                        _entityTypeIsDeletedProperty.SetValue(entity, true);
+                        _entityTypeDeletionTimeProperty?.SetValue(entity, DateTime.UtcNow);
+                    }
                     if (autoSave)
                     {
                         _ = await context.SaveChangesAsync(cancellationToken);
                     }
+                }
+                catch (Exception exception)
+                {
+                    return exception;
+                }
+            }
+            return new NullReferenceException(NullDbContext, fetchContext.Exception);
+        }
+
+        public override async Task<Result> DeleteManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
+        {
+            Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
+            if (fetchContext.IsSuccess)
+            {
+                DbContext context = fetchContext.Value;
+                try
+                {
+                    DbSet<TEntity> set = context.Set<TEntity>();
+                    if (_entityTypeIsDeletedProperty is null)
+                    {
+                        set.RemoveRange(entities);
+                    }
+                    else
+                    {
+                        foreach (TEntity entity in entities)
+                        {
+                            _entityTypeIsDeletedProperty.SetValue(entity, true);
+                            _entityTypeDeletionTimeProperty?.SetValue(entity, DateTime.UtcNow);
+                        }
+                    }
+                    if (autoSave)
+                    {
+                        _ = await context.SaveChangesAsync(cancellationToken);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    return exception;
+                }
+            }
+            return new NullReferenceException(NullDbContext, fetchContext.Exception);
+        }
+
+        public override async Task<Result> HardDeleteOneAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
+        {
+            Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
+            if (fetchContext.IsSuccess)
+            {
+                DbContext context = fetchContext.Value;
+                try
+                {
+                    DbSet<TEntity> set = context.Set<TEntity>();
+                    set.RemoveRange(entity);
+                    if (autoSave)
+                    {
+                        _ = await context.SaveChangesAsync(cancellationToken);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    return exception;
+                }
+            }
+            return new NullReferenceException(NullDbContext, fetchContext.Exception);
+        }
+
+        public override async Task<Result> HardDeleteManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
+        {
+            Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
+            if (fetchContext.IsSuccess)
+            {
+                DbContext context = fetchContext.Value;
+                try
+                {
+                    DbSet<TEntity> set = context.Set<TEntity>();
+                    set.RemoveRange(entities);
+                    if (autoSave)
+                    {
+                        _ = await context.SaveChangesAsync(cancellationToken);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    return exception;
+                }
+            }
+            return new NullReferenceException(NullDbContext, fetchContext.Exception);
+        }
+
+        public override async Task<Result> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            Result<DbContext> fetchContext = await _contextProvider.GetDbContextAsync();
+            if (fetchContext.IsSuccess)
+            {
+                DbContext context = fetchContext.Value;
+                try
+                {
+                    _ = await context.SaveChangesAsync(cancellationToken);
+                    return Result.Success();
                 }
                 catch (Exception exception)
                 {

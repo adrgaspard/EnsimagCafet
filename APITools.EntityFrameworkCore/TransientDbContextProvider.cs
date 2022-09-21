@@ -36,6 +36,5 @@ namespace APITools.EntityFrameworkCore
                 return Task.FromResult(Result.Error<DbContext>(exception));
             }
         }
-
     }
 }

@@ -19,24 +19,44 @@ namespace APITools.Domain
             _repository = repository;
         }
 
-        public Task<Result> DeleteManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
+        public async Task<Result<TEntity>> GetOneAsync(TKey id, CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(WriteOperationInvalidResult);
+            return await _repository.GetOneAsync(id, cancellationToken);
         }
 
-        public Task<Result> DeleteOneAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
+        public async Task<Result<TEntity>> GetOneAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
         {
-            return Task.FromResult(WriteOperationInvalidResult);
+            return await _repository.GetOneAsync(predicate, cancellationToken);
         }
 
-        public async Task<Result<long>> GetCountAsync(CancellationToken cancellationToken = default)
+        public async Task<Result<TEntity?>> GetOneOrDefaultAsync(TKey id, CancellationToken cancellationToken = default)
         {
-            return await _repository.GetCountAsync(cancellationToken);
+            return await _repository.GetOneOrDefaultAsync(id, cancellationToken);
         }
 
-        public async Task<Result<long>> GetCountAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        public async Task<Result<TEntity?>> GetOneOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
         {
-            return await _repository.GetCountAsync(predicate, cancellationToken);
+            return await _repository.GetOneOrDefaultAsync(predicate, cancellationToken);
+        }
+
+        public async Task<Result<TEntity>> GetSingleAsync(TKey id, CancellationToken cancellationToken = default)
+        {
+            return await _repository.GetSingleAsync(id, cancellationToken);
+        }
+
+        public async Task<Result<TEntity>> GetSingleAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        {
+            return await _repository.GetSingleAsync(predicate, cancellationToken);
+        }
+
+        public async Task<Result<TEntity?>> GetSingleOrDefaultAsync(TKey id, CancellationToken cancellationToken = default)
+        {
+            return await _repository.GetSingleOrDefaultAsync(id, cancellationToken);
+        }
+
+        public async Task<Result<TEntity?>> GetSingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        {
+            return await _repository.GetSingleOrDefaultAsync(predicate, cancellationToken);
         }
 
         public async Task<Result<IList<TEntity>>> GetManyAsync(CancellationToken cancellationToken = default)
@@ -79,44 +99,44 @@ namespace APITools.Domain
             return await _repository.GetManyAsync(skipCount, maxResultCount, predicate, sort, cancellationToken);
         }
 
-        public async Task<Result<TEntity>> GetOneAsync(TKey id, CancellationToken cancellationToken = default)
+        public async Task<Result<long>> GetCountAsync(CancellationToken cancellationToken = default)
         {
-            return await _repository.GetOneAsync(id, cancellationToken);
+            return await _repository.GetCountAsync(cancellationToken);
         }
 
-        public async Task<Result<TEntity>> GetOneAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        public async Task<Result<long>> GetCountAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
         {
-            return await _repository.GetOneAsync(predicate, cancellationToken);
+            return await _repository.GetCountAsync(predicate, cancellationToken);
         }
 
-        public async Task<Result<TEntity?>> GetOneOrDefaultAsync(TKey id, CancellationToken cancellationToken = default)
+        public Task<Result<TEntity>> InsertOneAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
         {
-            return await _repository.GetOneOrDefaultAsync(id, cancellationToken);
+            return Task.FromResult(WriteOperationInvalidTypedResult);
         }
 
-        public async Task<Result<TEntity?>> GetOneOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        public Task<Result> InsertManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
         {
-            return await _repository.GetOneOrDefaultAsync(predicate, cancellationToken);
+            return Task.FromResult(WriteOperationInvalidResult);
         }
 
-        public async Task<Result<TEntity>> GetSingleAsync(TKey id, CancellationToken cancellationToken = default)
+        public Task<Result> UpdateOneAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
         {
-            return await _repository.GetSingleAsync(id, cancellationToken);
+            return Task.FromResult(WriteOperationInvalidResult);
         }
 
-        public async Task<Result<TEntity>> GetSingleAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        public Task<Result> UpdateManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
         {
-            return await _repository.GetSingleAsync(predicate, cancellationToken);
+            return Task.FromResult(WriteOperationInvalidResult);
         }
 
-        public async Task<Result<TEntity?>> GetSingleOrDefaultAsync(TKey id, CancellationToken cancellationToken = default)
+        public Task<Result> DeleteOneAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
         {
-            return await _repository.GetSingleOrDefaultAsync(id, cancellationToken);
+            return Task.FromResult(WriteOperationInvalidResult);
         }
 
-        public async Task<Result<TEntity?>> GetSingleOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+        public Task<Result> DeleteManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
         {
-            return await _repository.GetSingleOrDefaultAsync(predicate, cancellationToken);
+            return Task.FromResult(WriteOperationInvalidResult);
         }
 
         public Task<Result> HardDeleteOneAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
@@ -129,27 +149,7 @@ namespace APITools.Domain
             return Task.FromResult(WriteOperationInvalidResult);
         }
 
-        public Task<Result> InsertManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
-        {
-            return Task.FromResult(WriteOperationInvalidResult);
-        }
-
-        public Task<Result<TEntity>> InsertOneAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
-        {
-            return Task.FromResult(WriteOperationInvalidTypedResult);
-        }
-
         public Task<Result> SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            return Task.FromResult(WriteOperationInvalidResult);
-        }
-
-        public Task<Result> UpdateManyAsync(IEnumerable<TEntity> entities, bool autoSave = false, CancellationToken cancellationToken = default)
-        {
-            return Task.FromResult(WriteOperationInvalidResult);
-        }
-
-        public Task<Result> UpdateOneAsync(TEntity entity, bool autoSave = false, CancellationToken cancellationToken = default)
         {
             return Task.FromResult(WriteOperationInvalidResult);
         }
