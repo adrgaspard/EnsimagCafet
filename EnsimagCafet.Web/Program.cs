@@ -1,5 +1,7 @@
 using EnsimagCafet.Domain.Identity;
 using EnsimagCafet.EntityFrameworkCore;
+using EnsimagCafet.MailKit;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
@@ -59,13 +61,8 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 // Add mail services to the container
 
-//builder.Services.AddTransient<IEmailSender, MailKitEmailSender>();
-//builder.Services.Configure<MailKitEmailSenderOptions>(options => // Remplacer par builder.Configuration
-//{
-//    options.SenderName = "Cafet Ensimag";
-//    options.SenderEmail = "ensi.cafet@gmail.com";
-//    options.SenderPassword = "bbreclkjpcvcafgq";
-//});
+builder.Services.AddTransient<IEmailSender, MailKitEmailSender>();
+builder.Services.Configure<MailKitEmailSenderOptions>(builder.Configuration.GetSection(MailKitEmailSenderOptions.MailKitSectionName));
 
 // Build the app.
 

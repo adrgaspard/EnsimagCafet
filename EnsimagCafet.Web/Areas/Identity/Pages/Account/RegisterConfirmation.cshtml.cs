@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
-using System.Text;
 
 namespace EnsimagCafet.Web.Areas.Identity.Pages.Account
 {
@@ -49,7 +47,7 @@ namespace EnsimagCafet.Web.Areas.Identity.Pages.Account
             {
                 return RedirectToPage("/Index");
             }
-            returnUrl ??= Url.Content("~/");
+            _ = returnUrl ?? Url.Content("~/");
 
             User user = await _userManager.FindByEmailAsync(email);
             if (user == null)
@@ -58,19 +56,6 @@ namespace EnsimagCafet.Web.Areas.Identity.Pages.Account
             }
 
             Email = email;
-            // Once you add a real email sender, you should remove this code that lets you confirm the account
-            DisplayConfirmAccountLink = true;
-            if (DisplayConfirmAccountLink)
-            {
-                string userId = await _userManager.GetUserIdAsync(user);
-                string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                EmailConfirmationUrl = Url.Page(
-                    "/Account/ConfirmEmail",
-                    pageHandler: null,
-                    values: new { area = "Identity", userId, code, returnUrl },
-                    protocol: Request.Scheme);
-            }
 
             return Page();
         }
