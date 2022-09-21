@@ -1,11 +1,13 @@
 ﻿using EnsimagCafet.Domain.Identity;
 using Microsoft.AspNetCore.Identity;
+using static EnsimagCafet.Domain.Shared.Identity.RoleConsts;
+using static EnsimagCafet.Domain.Shared.Identity.UserConsts;
 
 namespace EnsimagCafet.EntityFrameworkCore.DbMigrator
 {
     public sealed class ApplicationDbDataSeeder
     {
-        protected readonly ApplicationDbDataSeedingOptions _options;
+        private readonly ApplicationDbDataSeedingOptions _options;
 
         public ApplicationDbDataSeeder(ApplicationDbDataSeedingOptions options)
         {
@@ -15,56 +17,50 @@ namespace EnsimagCafet.EntityFrameworkCore.DbMigrator
         public void Seed(ApplicationDbContext context)
         {
             _ = context.Database.EnsureCreated();
-            Guid adminRoleId = Guid.Parse("88888888-0001-0001-83d9-bb4152f3299d");
-            Guid masterRoleId = Guid.Parse("88888888-0001-0002-a04e-d0da21e72853");
-            Guid managerRoleId = Guid.Parse("88888888-0001-0003-8de1-ca156a62546d");
-            Guid customerRoleId = Guid.Parse("88888888-0001-0004-90ea-d03576334d72");
             if (_options.ChecksAllRoles)
             {
-                if (context.Roles.FirstOrDefault(role => role.Id == adminRoleId) is null)
+                if (context.Roles.FirstOrDefault(role => role.Id == AdminRoleId) is null)
                 {
-                    _ = context.Roles.Add(new() { Id = adminRoleId, Name = "Administrator" });
+                    _ = context.Roles.Add(new() { Id = AdminRoleId, Name = AdminRoleName });
                 }
-                if (context.Roles.FirstOrDefault(role => role.Id == masterRoleId) is null)
+                if (context.Roles.FirstOrDefault(role => role.Id == MasterRoleId) is null)
                 {
-                    _ = context.Roles.Add(new() { Id = masterRoleId, Name = "Master" });
+                    _ = context.Roles.Add(new() { Id = MasterRoleId, Name = MasterRoleName });
                 }
-                if (context.Roles.FirstOrDefault(role => role.Id == managerRoleId) is null)
+                if (context.Roles.FirstOrDefault(role => role.Id == ManagerRoleId) is null)
                 {
-                    _ = context.Roles.Add(new() { Id = managerRoleId, Name = "Manager" });
+                    _ = context.Roles.Add(new() { Id = ManagerRoleId, Name = ManagerRoleName });
                 }
-                if (context.Roles.FirstOrDefault(role => role.Id == customerRoleId) is null)
+                if (context.Roles.FirstOrDefault(role => role.Id == CustomerRoleId) is null)
                 {
-                    _ = context.Roles.Add(new() { Id = customerRoleId, Name = "Customer" });
+                    _ = context.Roles.Add(new() { Id = CustomerRoleId, Name = CustomerRoleName });
                 }
             }
-            Guid superUserId = Guid.Parse("88888888-0002-0001-bd02-a0500e0cc7f3");
             if (_options.ChecksSuperUser)
             {
                 if (_options.ChecksSuperUser)
                 {
-                    if (context.Users.FirstOrDefault(user => user.Id == superUserId) is null)
+                    if (context.Users.FirstOrDefault(user => user.Id == SuperUserId) is null)
                     {
                         PasswordHasher<User> passwordHasher = new();
                         User user = new()
                         {
-                            Id = superUserId,
-                            UserName = "SuperUser",
-                            NormalizedUserName = "SuperUser".ToUpper(),
-                            Email = "super@user.com",
-                            NormalizedEmail = "super@user.com".ToUpper(),
+                            Id = SuperUserId,
+                            UserName = SuperUserUserName,
+                            NormalizedUserName = SuperUserUserName.ToUpper(),
+                            Email = SuperUserEmail,
+                            NormalizedEmail = SuperUserEmail.ToUpper(),
                             SecurityStamp = string.Concat(Array.ConvertAll(Guid.NewGuid().ToByteArray(), b => b.ToString("X2")))
                         };
-                        user.PasswordHash = passwordHasher.HashPassword(user, "Aa123!");
+                        user.PasswordHash = passwordHasher.HashPassword(user, _options.SuperUserDefaultPassword);
                         _ = context.Users.Add(user);
-                        _ = context.UserRoles.Add(new() { UserId = superUserId, RoleId = adminRoleId });
-                        _ = context.UserRoles.Add(new() { UserId = superUserId, RoleId = masterRoleId });
-                        _ = context.UserRoles.Add(new() { UserId = superUserId, RoleId = managerRoleId });
-                        _ = context.UserRoles.Add(new() { UserId = superUserId, RoleId = customerRoleId });
+                        _ = context.UserRoles.Add(new() { UserId = SuperUserId, RoleId = AdminRoleId });
+                        _ = context.UserRoles.Add(new() { UserId = SuperUserId, RoleId = MasterRoleId });
+                        _ = context.UserRoles.Add(new() { UserId = SuperUserId, RoleId = ManagerRoleId });
+                        _ = context.UserRoles.Add(new() { UserId = SuperUserId, RoleId = CustomerRoleId });
                     }
                 }
             }
-
             _ = context.SaveChanges();
         }
     }

@@ -1,10 +1,12 @@
 ﻿using EnsimagCafet.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Localization;
 using System.Diagnostics;
 
 namespace EnsimagCafet.Web.Controllers
 {
+    [AllowAnonymous]
     public sealed class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

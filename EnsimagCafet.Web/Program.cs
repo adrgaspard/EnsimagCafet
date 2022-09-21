@@ -1,6 +1,9 @@
 using EnsimagCafet.Domain.Identity;
+using EnsimagCafet.Domain.Shared.Identity;
 using EnsimagCafet.EntityFrameworkCore;
 using EnsimagCafet.MailKit;
+using EnsimagCafet.Web.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -31,12 +34,12 @@ builder.Services.AddControllersWithViews();
 
 // Add authentication & authorization services to the container.
 
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.AddPolicy("IsSuperUser", policy => policy.AddRequirements(new IdentifierRequirement("oui@test.com")));
-//});
-//builder.Services.AddSingleton<IAuthorizationHandler, IdentifierAuthorizationHandler>();
-//builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(AuthorizationPolicies.IsSuperUser, policy => policy.AddRequirements(new SuperUserRequirement(UserConsts.SuperUserUserName, new List<string> { RoleConsts.AdminRoleName })));
+    options.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+});
+builder.Services.AddSingleton<IAuthorizationHandler, SuperUserAuthorizationHandler>();
 
 // Add logging service to the container.
 

@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EnismagCafet.EntityFrameworkCore\EnismagCafet.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\EnsimagCafet.Domain.Shared\EnsimagCafet.Domain.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
