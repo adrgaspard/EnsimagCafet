@@ -1,8 +1,13 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer loc
+@{
     ViewData["Title"] = "Home Page";
 }
 
+<partial name="_Culture" />
+
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">@loc["HelloWorld"]</h1>
+    <h1 class="display-4">@ViewData["Test"]</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>

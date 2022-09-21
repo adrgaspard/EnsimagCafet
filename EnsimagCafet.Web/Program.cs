@@ -1,6 +1,10 @@
 using EnsimagCafet.Domain.Identity;
 using EnsimagCafet.EntityFrameworkCore;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +23,7 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
 
 // Add MVC services to the container.
 
+var mvcBuilder = builder.Services.AddMvc();
 builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 
@@ -37,7 +42,20 @@ builder.Services.AddLogging();
 
 // Add localization service to the container.
 
-builder.Services.AddLocalization();
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+mvcBuilder.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix, options => options.ResourcesPath = "Resources")
+    .AddDataAnnotationsLocalization();
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new List<CultureInfo>()
+    {
+        new CultureInfo("en-US"),
+        new CultureInfo("fr-FR")
+    };
+    options.DefaultRequestCulture = new RequestCulture("en-US");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+});
 
 // Add mail services to the container
 
@@ -61,12 +79,16 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+// Configure the localization services.
+
+app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
 // Configure the authentication & autorization services.
 
@@ -75,9 +97,10 @@ app.UseAuthorization();
 
 // Configure the MVC services.
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 app.MapRazorPages();
 
 // Run the app.
