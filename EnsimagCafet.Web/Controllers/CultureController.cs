@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace EnsimagCafet.Web.Controllers
 {
     [Route("[controller]")]
-    public class CultureController : Controller
+    public sealed class CultureController : Controller
     {
         [HttpPost("set")]
         public IActionResult Set([FromForm] string culture, [FromQuery] string redirectUri)

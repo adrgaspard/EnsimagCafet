@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace EnsimagCafet.EntityFrameworkCore.DbMigrator
 {
-    public class ApplicationDbDataSeeder
+    public sealed class ApplicationDbDataSeeder
     {
         protected readonly ApplicationDbDataSeedingOptions _options;
 

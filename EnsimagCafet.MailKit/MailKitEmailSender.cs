@@ -7,7 +7,7 @@ using MimeKit.Text;
 
 namespace EnsimagCafet.MailKit
 {
-    public class MailKitEmailSender : IEmailSender
+    public sealed class MailKitEmailSender : IEmailSender
     {
         private readonly ILogger _logger;
 

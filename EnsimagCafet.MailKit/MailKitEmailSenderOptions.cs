@@ -1,6 +1,6 @@
 ﻿namespace EnsimagCafet.MailKit
 {
-    public class MailKitEmailSenderOptions
+    public sealed class MailKitEmailSenderOptions
     {
         public const string MailKitSectionName = "MailKit";
 

@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace EnsimagCafet.EntityFrameworkCore.DbMigrator
 {
-    public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
+    public sealed class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
     {
         public ApplicationDbContext CreateDbContext(string[] args)
         {

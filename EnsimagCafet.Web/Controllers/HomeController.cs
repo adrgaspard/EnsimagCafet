@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace EnsimagCafet.Web.Controllers
 {
-    public class HomeController : Controller
+    public sealed class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IHtmlLocalizer<HomeController> _localizer;
