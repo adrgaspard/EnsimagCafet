@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace EnsimagCafet.Web.Models.Account
 {
@@ -7,6 +6,5 @@ namespace EnsimagCafet.Web.Models.Account
     {
         [Required]
         public IEnumerable<string> Codes { get; set; } = Enumerable.Empty<string>();
-
     }
 }

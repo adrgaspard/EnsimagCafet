@@ -1,8 +1,6 @@
-﻿using EnsimagCafet.Web.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Localization;
-using System.Diagnostics;
 
 namespace EnsimagCafet.Web.Controllers
 {

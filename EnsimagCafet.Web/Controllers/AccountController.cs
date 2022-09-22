@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using EnsimagCafet.Domain.Identity;
-using EnsimagCafet.Web.Models.Identity;
+﻿using EnsimagCafet.Domain.Identity;
 using EnsimagCafet.Web.Models.Account;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EnsimagCafet.Web.Controllers
 {
@@ -21,6 +20,16 @@ namespace EnsimagCafet.Web.Controllers
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
+        }
+
+        public enum ManageMessageId
+        {
+            AddLoginSuccess,
+            ChangePasswordSuccess,
+            SetTwoFactorSuccess,
+            SetPasswordSuccess,
+            RemoveLoginSuccess,
+            Error
         }
 
         [HttpGet("Index")]
@@ -236,16 +245,5 @@ namespace EnsimagCafet.Web.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
         }
-
-        public enum ManageMessageId
-        {
-            AddLoginSuccess,
-            ChangePasswordSuccess,
-            SetTwoFactorSuccess,
-            SetPasswordSuccess,
-            RemoveLoginSuccess,
-            Error
-        }
-
     }
 }
