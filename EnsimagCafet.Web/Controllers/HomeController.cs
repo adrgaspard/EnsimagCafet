@@ -6,7 +6,6 @@ using System.Diagnostics;
 
 namespace EnsimagCafet.Web.Controllers
 {
-    [AllowAnonymous]
     public sealed class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -19,6 +18,7 @@ namespace EnsimagCafet.Web.Controllers
         }
 
         [HttpGet("")]
+        [AllowAnonymous]
         public IActionResult Index()
         {
             ViewData["Test"] = _localizer["TestC"];
@@ -26,11 +26,14 @@ namespace EnsimagCafet.Web.Controllers
         }
 
         [HttpGet("privacy")]
+        [AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();
         }
 
+        [HttpGet("error")]
+        [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

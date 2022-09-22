@@ -76,10 +76,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+    app.UseDeveloperExceptionPage();
 }
 else
 {
-    app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler("/error"); // TODO: Error 500
     app.UseHsts();
 }
 app.UseHttpsRedirection();
