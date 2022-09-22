@@ -1,0 +1,65 @@
+﻿@using EnsimagCafet.Web.Models.Account
+@model IndexViewModel
+@{
+    ViewData["Title"] = "Manage your account";
+}
+
+<h1>@ViewData["Title"].</h1>
+<p class="text-success">@ViewData["StatusMessage"]</p>
+
+<div>
+    <h4>Change your account settings</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>Password:</dt>
+        <dd>
+            @if (Model.HasPassword)
+            {
+                <text>[&nbsp;&nbsp;<a asp-controller="Account" asp-action="ChangePassword">Change</a>&nbsp;&nbsp;]</text>
+            }
+            else
+            {
+                <text>[&nbsp;&nbsp;<a asp-controller="Account" asp-action="SetPassword">Create</a>&nbsp;&nbsp;]</text>
+            }
+        </dd>
+        <dt>External Logins:</dt>
+        <dd>
+            @Model.Logins.Count [&nbsp;&nbsp;<a asp-controller="Account" asp-action="ManageLogins">Manage</a>&nbsp;&nbsp;]
+        </dd>
+        <dt>Two-Factor Authentication:</dt>
+        <dd>
+            <!--<p>
+                There are no two-factor authentication providers configured. See <a href="http://go.microsoft.com/fwlink/?LinkID=532713">this article</a>
+                for setting up this application to support two-factor authentication.
+            </p>-->
+            @if (Model.TwoFactor)
+                {
+                    <form asp-controller="Account" asp-action="DisableTwoFactorAuthentication" method="post" class="form-horizontal" role="form">
+                        Enabled [<button type="submit" class="btn-link">Disable</button>]
+                    </form>
+                }
+                else
+                {
+                    <form asp-controller="Account" asp-action="EnableTwoFactorAuthentication" method="post" class="form-horizontal" role="form">
+                        [<button type="submit" class="btn-link">Enable</button>] Disabled
+                    </form>
+                }
+        </dd>
+        <dt>Authentication App:</dt>
+        <dd>
+            @if (Model.AuthenticatorKey == null)
+            {
+                <form asp-controller="Account" asp-action="ResetAuthenticatorKey" method="post" class="form-horizontal" role="form">
+                    Generate [<button type="submit" class="btn-link">Generate</button>]
+                </form>
+            }
+            else
+            {
+                <text>Your key is: @Model.AuthenticatorKey</text>
+                <form asp-controller="Account" asp-action="GenerateRecoveryCode" method="post" class="form-horizontal" role="form">
+                    Generate [<button type="submit" class="btn-link">Generate new recovery codes</button>]
+                </form>
+            }
+        </dd>
+    </dl>
+</div>

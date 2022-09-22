@@ -20,14 +20,21 @@ namespace EnsimagCafet.Web.Controllers
         public IActionResult Index()
         {
             ViewData["Test"] = _localizer["TestC"];
-            return View();
+            return View("index");
         }
 
         [HttpGet("privacy")]
         [AllowAnonymous]
         public IActionResult Privacy()
         {
-            return View();
+            return View("privacy");
+        }
+
+        [HttpGet("bootstrap")]
+        [AllowAnonymous]
+        public IActionResult Bootstrap()
+        {
+            return View("bootstrap");
         }
     }
 }

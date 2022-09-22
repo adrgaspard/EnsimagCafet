@@ -9,7 +9,7 @@ namespace EnsimagCafet.Web.Controllers
         [HttpGet("{statusCode}")]
         [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult ClientExceptions([FromRoute] int statusCode)
+        public IActionResult HttpError([FromRoute] int statusCode)
         {
             if (statusCode < 400 || statusCode > 599)
             {
