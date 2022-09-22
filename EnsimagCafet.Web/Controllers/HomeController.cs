@@ -8,12 +8,10 @@ namespace EnsimagCafet.Web.Controllers
 {
     public sealed class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly IHtmlLocalizer<HomeController> _localizer;
 
-        public HomeController(ILogger<HomeController> logger, IHtmlLocalizer<HomeController> localizer)
+        public HomeController(IHtmlLocalizer<HomeController> localizer)
         {
-            _logger = logger;
             _localizer = localizer;
         }
 
@@ -30,14 +28,6 @@ namespace EnsimagCafet.Web.Controllers
         public IActionResult Privacy()
         {
             return View();
-        }
-
-        [HttpGet("error")]
-        [AllowAnonymous]
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

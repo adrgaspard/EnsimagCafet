@@ -21,19 +21,19 @@ namespace EnsimagCafet.EntityFrameworkCore.DbMigrator
             {
                 if (context.Roles.FirstOrDefault(role => role.Id == AdminRoleId) is null)
                 {
-                    _ = context.Roles.Add(new() { Id = AdminRoleId, Name = AdminRoleName });
+                    _ = context.Roles.Add(new() { Id = AdminRoleId, Name = AdminRoleName, NormalizedName = AdminRoleName.ToUpper() });
                 }
                 if (context.Roles.FirstOrDefault(role => role.Id == MasterRoleId) is null)
                 {
-                    _ = context.Roles.Add(new() { Id = MasterRoleId, Name = MasterRoleName });
+                    _ = context.Roles.Add(new() { Id = MasterRoleId, Name = MasterRoleName, NormalizedName = MasterRoleName.ToUpper() });
                 }
                 if (context.Roles.FirstOrDefault(role => role.Id == ManagerRoleId) is null)
                 {
-                    _ = context.Roles.Add(new() { Id = ManagerRoleId, Name = ManagerRoleName });
+                    _ = context.Roles.Add(new() { Id = ManagerRoleId, Name = ManagerRoleName, NormalizedName = ManagerRoleName.ToUpper() });
                 }
                 if (context.Roles.FirstOrDefault(role => role.Id == CustomerRoleId) is null)
                 {
-                    _ = context.Roles.Add(new() { Id = CustomerRoleId, Name = CustomerRoleName });
+                    _ = context.Roles.Add(new() { Id = CustomerRoleId, Name = CustomerRoleName, NormalizedName = CustomerRoleName.ToUpper() });
                 }
             }
             if (_options.ChecksSuperUser)
