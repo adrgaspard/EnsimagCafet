@@ -5,21 +5,11 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <form asp-controller="Identity" asp-action="LogOff" method="post" id="logoutForm" class="navbar-right">
-        <ul class="nav navbar-nav navbar-right">
-            <li>
-                <a asp-controller="Account" asp-action="Index" title="Account" class="nav-link text-dark">Hello @UserManager.GetUserName(User)!</a>
-            </li>
-            <li>
-                <button type="submit" class="btn btn-link navbar-btn navbar-link">Log off</button>
-            </li>
-        </ul>
-    </form>
+    <a asp-controller="Account" asp-action="Index" title="Account" class="mx-1 px-4 btn btn-active-light-primary btn-custom btn-text-light">@UserManager.GetUserName(User)</a>
+    <a asp-controller="Identity" asp-action="LogOff" method="post" class="mx-1 px-4 btn btn-active-light-primary btn-custom btn-text-light">Log off</a>
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right">
-        <li><a class="nav-link text-dark" asp-controller="Identity" asp-action="Register">Register</a></li>
-        <li><a class="nav-link text-dark" asp-controller="Identity" asp-action="Login">Log in</a></li>
-    </ul>
+    <a asp-controller="Identity" asp-action="Register" class="mx-1 px-4 btn btn-active-light-primary btn-custom btn-text-light">Register</a>
+    <a asp-controller="Identity" asp-action="Login" class="mx-1 px-4 btn btn-active-light-primary btn-custom btn-text-light">Log in</a>
 }

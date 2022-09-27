@@ -9,7 +9,7 @@ namespace EnsimagCafet.Web.Controllers
     {
         [HttpPost("set")]
         [AllowAnonymous]
-        public IActionResult Set([FromForm] string culture, [FromQuery] string redirectUri)
+        public IActionResult Set(string culture, string redirectUri)
         {
             Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName, CookieRequestCultureProvider.MakeCookieValue(new(culture)));
             return LocalRedirect(redirectUri);
