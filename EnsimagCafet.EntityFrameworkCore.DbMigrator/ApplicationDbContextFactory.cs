@@ -9,7 +9,7 @@ namespace EnsimagCafet.EntityFrameworkCore.DbMigrator
     {
         private readonly Configuration _configuration;
 
-        public ApplicationDbContextFactory() : this(ConfigurationManager.OpenMappedExeConfiguration(new() { ExeConfigFilename = "App.config" }, ConfigurationUserLevel.None))
+        public ApplicationDbContextFactory() : this(ConfigurationManager.OpenMappedExeConfiguration(new() { ExeConfigFilename = "App.config" }, ConfigurationUserLevel.None)) { }
 
         public ApplicationDbContextFactory(Configuration configuration)
         {
