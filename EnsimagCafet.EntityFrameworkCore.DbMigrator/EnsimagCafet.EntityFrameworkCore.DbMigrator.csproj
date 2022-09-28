@@ -34,8 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EnismagCafet.EntityFrameworkCore\EnismagCafet.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\EnsimagCafet.Domain.Shared\EnsimagCafet.Domain.Shared.csproj" />
+    <ProjectReference Include="..\EnsimagCafet.EntityFrameworkCore\EnsimagCafet.EntityFrameworkCore.csproj" />
   </ItemGroup>
 
 </Project>

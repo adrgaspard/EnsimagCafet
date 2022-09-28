@@ -17,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APITools.EntityFrameworkCor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnsimagCafet.Web", "EnsimagCafet.Web\EnsimagCafet.Web.csproj", "{FB1B417A-16CB-41BF-A67D-38A1F0C3E4DB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnismagCafet.EntityFrameworkCore", "EnismagCafet.EntityFrameworkCore\EnismagCafet.EntityFrameworkCore.csproj", "{0D47C1B7-5287-4B0C-9282-2494DC7E685F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnsimagCafet.EntityFrameworkCore.DbMigrator", "EnsimagCafet.EntityFrameworkCore.DbMigrator\EnsimagCafet.EntityFrameworkCore.DbMigrator.csproj", "{02E8F313-0245-4E79-985D-8B22323A1D72}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnsimagCafet.MailKit", "EnsimagCafet.MailKit\EnsimagCafet.MailKit.csproj", "{C5DD0D53-341D-4673-88A8-BD40A0D5F222}"
@@ -27,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnsimagCafet.EntityFrameworkCore", "EnsimagCafet.EntityFrameworkCore\EnsimagCafet.EntityFrameworkCore.csproj", "{EEB7C9C1-2E78-494D-BB01-3B314979D47A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,10 +62,6 @@ Global
 		{FB1B417A-16CB-41BF-A67D-38A1F0C3E4DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB1B417A-16CB-41BF-A67D-38A1F0C3E4DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB1B417A-16CB-41BF-A67D-38A1F0C3E4DB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0D47C1B7-5287-4B0C-9282-2494DC7E685F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0D47C1B7-5287-4B0C-9282-2494DC7E685F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0D47C1B7-5287-4B0C-9282-2494DC7E685F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0D47C1B7-5287-4B0C-9282-2494DC7E685F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{02E8F313-0245-4E79-985D-8B22323A1D72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{02E8F313-0245-4E79-985D-8B22323A1D72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02E8F313-0245-4E79-985D-8B22323A1D72}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -74,6 +70,10 @@ Global
 		{C5DD0D53-341D-4673-88A8-BD40A0D5F222}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5DD0D53-341D-4673-88A8-BD40A0D5F222}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5DD0D53-341D-4673-88A8-BD40A0D5F222}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEB7C9C1-2E78-494D-BB01-3B314979D47A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEB7C9C1-2E78-494D-BB01-3B314979D47A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEB7C9C1-2E78-494D-BB01-3B314979D47A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEB7C9C1-2E78-494D-BB01-3B314979D47A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
