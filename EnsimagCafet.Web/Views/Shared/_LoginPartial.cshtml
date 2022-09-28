@@ -5,8 +5,10 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <a asp-controller="Account" asp-action="Index" title="Account" class="mx-1 px-4 btn btn-active-light-primary btn-custom btn-text-light">@UserManager.GetUserName(User)</a>
-    <a asp-controller="Identity" asp-action="LogOff" method="post" class="mx-1 px-4 btn btn-active-light-primary btn-custom btn-text-light">Log off</a>
+    <a asp-controller="Account" asp-action="Index" class="mx-1 px-4 btn btn-active-light-primary btn-custom btn-text-light">@UserManager.GetUserName(User)</a>
+    <form asp-controller="Identity" asp-action="LogOff" method="post" id="logoutForm" class="navbar-right">
+        <button type="submit" class="mx-1 px-4 btn btn-active-light-primary btn-custom btn-text-light">Log off</button>
+    </form>
 }
 else
 {
