@@ -71,6 +71,13 @@ builder.Services.Configure<MailKitEmailSenderOptions>(builder.Configuration.GetS
 
 var app = builder.Build();
 
+// Add host urls.
+
+foreach (var url in builder.Configuration.GetSection("Urls").Get<string[]>())
+{
+    app.Urls.Add(url);
+}
+
 // Configure the HTTP request pipeline.
 
 if (app.Environment.IsDevelopment())
