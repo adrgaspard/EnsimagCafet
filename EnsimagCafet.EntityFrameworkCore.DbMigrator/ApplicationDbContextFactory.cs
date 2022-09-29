@@ -11,7 +11,13 @@ namespace EnsimagCafet.EntityFrameworkCore.DbMigrator
     {
         private readonly IConfiguration _configuration;
 
-        public ApplicationDbContextFactory() : this(new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true).AddEnvironmentVariables().AddCommandLine(Array.Empty<string>()).Build())
+        public ApplicationDbContextFactory() : this(new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", false, true)
+            .AddJsonFile("appsettings.Development.json", true, true)
+            .AddJsonFile("appsettings.Production.json", true, true)
+            .AddEnvironmentVariables()
+            .AddCommandLine(Array.Empty<string>())
+            .Build())
         {
         }
 
