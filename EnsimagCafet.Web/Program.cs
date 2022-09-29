@@ -73,7 +73,7 @@ var app = builder.Build();
 
 // Add host urls.
 
-foreach (var url in builder.Configuration.GetSection("Urls").Get<string[]>())
+foreach (var url in builder.Configuration.GetSection("HostingUrls").Get<string[]>())
 {
     app.Urls.Add(url);
 }
