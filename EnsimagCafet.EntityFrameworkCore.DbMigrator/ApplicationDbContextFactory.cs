@@ -23,7 +23,7 @@ namespace EnsimagCafet.EntityFrameworkCore.DbMigrator
         public ApplicationDbContext CreateDbContext(string[] args)
         {
             string connectionName = args.Length == 0 ? "DefaultConnection" : string.Join(" ", args);
-            string connectionString = _configuration.GetConnectionString(connectionName);
+            string connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? _configuration.GetConnectionString(connectionName);
             return new(new DbContextOptionsBuilder<ApplicationDbContext>().UseNpgsql(connectionString, builder =>
             {
                 _ = builder.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName);

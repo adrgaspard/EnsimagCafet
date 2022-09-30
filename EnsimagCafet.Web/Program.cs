@@ -4,6 +4,7 @@ using EnsimagCafet.EntityFrameworkCore;
 using EnsimagCafet.MailKit;
 using EnsimagCafet.Web.Authorization;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -15,7 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add database services to the container.
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("DefaultConnection");
+Console.WriteLine($"ENV STR: {Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")}");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -67,16 +69,13 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 builder.Services.AddTransient<IEmailSender, MailKitEmailSender>();
 builder.Services.Configure<MailKitEmailSenderOptions>(builder.Configuration.GetSection(MailKitEmailSenderOptions.MailKitSectionName));
 
+// Add anti-forgery to the container.
+
+builder.Services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(@"/var/af-keys/"));
+
 // Build the app.
 
 var app = builder.Build();
-
-// Add host urls.
-
-foreach (var url in builder.Configuration.GetSection("HostingUrls").Get<string[]>())
-{
-    app.Urls.Add(url);
-}
 
 // Configure the HTTP request pipeline.
 
@@ -94,6 +93,8 @@ app.UseStatusCodePagesWithRedirects("/Error/{0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.Urls.Add("https://[::]:7001");
+app.Urls.Add("https://[::]:7000");
 
 // Configure the localization services.
 

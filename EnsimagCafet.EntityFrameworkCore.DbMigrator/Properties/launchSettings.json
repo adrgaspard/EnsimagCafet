@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "EnsimagCafet.EntityFrameworkCore.DbMigrator": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
