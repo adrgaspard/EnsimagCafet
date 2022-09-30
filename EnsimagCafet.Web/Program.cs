@@ -5,6 +5,8 @@ using EnsimagCafet.MailKit;
 using EnsimagCafet.Web.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -17,7 +19,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add database services to the container.
 
 var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("DefaultConnection");
-Console.WriteLine($"ENV STR: {Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")}");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -69,9 +70,11 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 builder.Services.AddTransient<IEmailSender, MailKitEmailSender>();
 builder.Services.Configure<MailKitEmailSenderOptions>(builder.Configuration.GetSection(MailKitEmailSenderOptions.MailKitSectionName));
 
-// Add anti-forgery to the container.
+// Add data protection to the container.
 
-builder.Services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(@"/var/af-keys/"));
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new (@"/var/af-keys/"))
+    .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration{ EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC, ValidationAlgorithm = ValidationAlgorithm.HMACSHA256 });
 
 // Build the app.
 
@@ -90,11 +93,11 @@ else
     app.UseHsts();
 }
 app.UseStatusCodePagesWithRedirects("/Error/{0}");
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.Urls.Add("https://[::]:7001");
-app.Urls.Add("https://[::]:7000");
+//app.Urls.Add("https://*:5001");
+app.Urls.Add("http://*:5000");
 
 // Configure the localization services.
 

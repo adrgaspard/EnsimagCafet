@@ -7,34 +7,33 @@ networks:
     driver: bridge
 
 volumes:
-  database-data:
+  postgres-data:
     driver: local
   antiforgery-keys-data:
     driver: local
 
 services:
   ensimagcafet.web:
-    container_name: "EnsimagCafet.Web"
+    container_name: EnsimagCafet.Web
     image: ${DOCKER_REGISTRY-}ensimagcafetweb
     depends_on:
-    - "postgres"
+    - postgres
     build:
       context: .
       dockerfile: EnsimagCafet.Web/Dockerfile
     restart: always
     ports:
-    - "5000:7000"
-    - "5001:7001"
+    - 5000:5000
     environment:
-      ASPNETCORE_ENVIRONMENT: "Development"
-      DB_CONNECTION_STRING: "host=postgres;port=5432;database=ensimagcafetdev;username=ensimagcafetdev;password=EnsimagCafetDev"
+      ASPNETCORE_ENVIRONMENT: Development
+      DB_CONNECTION_STRING: host=postgres;port=5432;database=ensimagcafetdev;username=ensimagcafetdev;password=EnsimagCafetDev
     networks:
       - ensimagcafet.web-network
     volumes:
     - antiforgery-keys-data:/var/af-keys
 
   ensimagcafet.entityframeworkcore.dbmigrator:
-    container_name: "EnsimagCafet.EntityFrameworkCore.DbMigrator"
+    container_name: EnsimagCafet.EntityFrameworkCore.DbMigrator
     image: ${DOCKER_REGISTRY-}ensimagcafetentityframeworkcoredbmigrator
     depends_on:
     - "postgres"
@@ -42,21 +41,21 @@ services:
       context: .
       dockerfile: EnsimagCafet.EntityFrameworkCore.DbMigrator/Dockerfile
     environment:
-      DB_CONNECTION_STRING: "host=postgres;port=5432;database=ensimagcafetdev;username=ensimagcafetdev;password=EnsimagCafetDev"
+      DB_CONNECTION_STRING: host=postgres;port=5432;database=ensimagcafetdev;username=ensimagcafetdev;password=EnsimagCafetDev
     networks:
       - ensimagcafet.web-network
 
   postgres:
-    container_name: "Postgres"
-    image: "postgres"
+    container_name: Postgres
+    image: postgres
     expose:
-    - "5432"
+    - 5432
     restart: always
     environment:
-      POSTGRES_USER: "ensimagcafetdev"
-      POSTGRES_PASSWORD: "EnsimagCafetDev"
-      POSTGRES_DB: "ensimagcafetdev"
+      POSTGRES_USER: ensimagcafetdev
+      POSTGRES_PASSWORD: EnsimagCafetDev
+      POSTGRES_DB: ensimagcafetdev
     networks:
       - ensimagcafet.web-network
     volumes:
-    - database-data:/var/lib/postgresql/data
+    - postgres-data:/var/lib/postgresql/data
