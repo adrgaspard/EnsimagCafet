@@ -99,7 +99,7 @@ app.UseStatusCodePagesWithRedirects("/Error/{0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.Urls.Add("http://*:5001");
+app.Urls.Add("https://*:5001");
 app.Urls.Add("http://*:5000");
 
 // Configure the localization services.
