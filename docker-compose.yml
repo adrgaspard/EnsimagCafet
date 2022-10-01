@@ -14,6 +14,14 @@ volumes:
     driver: local
 
 services:
+  whoami:
+    image: traefik/whoami
+    container_name: WhoAmI
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.whoami.rule=Host(`whoami.cafet-ensimag.fr`)
+      - traefik.http.routers.whoami.entrypoints=web
+
   ensimagcafet.web:
     container_name: EnsimagCafet.Web
     image: ${DOCKER_REGISTRY-}ensimagcafetweb
@@ -34,9 +42,9 @@ services:
     volumes:
       - antiforgery-keys-data:/var/af-keys
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.cafetensimag.rule=Host(`cafet-ensimag.fr`)"
-      - "traefik.http.routers.cafetensimag.entrypoints=web"
+      #- "traefik.enable=true"
+      #- "traefik.http.routers.cafetensimag.rule=Host(`whoami.cafet-ensimag.fr`)"
+      #- "traefik.http.routers.cafetensimag.entrypoints=web"
 
   ensimagcafet.entityframeworkcore.dbmigrator:
     container_name: EnsimagCafet.EntityFrameworkCore.DbMigrator
