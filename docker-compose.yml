@@ -36,7 +36,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.cafetensimag.rule=Host(`cafet-ensimag.fr`)
-      - traefik.http.routers.cafetensimag.entrypoints=websecure
+    #  - traefik.http.routers.cafetensimag.entrypoints=websecure
     #  - traefik.http.routers.cafetensimag.tls.certresolver=cafetensimagresolver
 
   ensimagcafet.entityframeworkcore.dbmigrator:
