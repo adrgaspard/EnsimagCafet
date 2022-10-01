@@ -354,3 +354,4 @@ MigrationBackup/
 
 # Custom rules
 .vs/*
+letsencrypt/acme.json
