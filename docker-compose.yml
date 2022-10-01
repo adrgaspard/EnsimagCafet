@@ -4,9 +4,6 @@ networks:
   ensimagcafet-network:
     name: EnsimagCafet-Network
     driver: bridge
-  proxy-network:
-    name: Proxy-Network
-    driver: bridge
 
 volumes:
   postgres-data:
@@ -34,15 +31,12 @@ services:
       DB_CONNECTION_STRING: host=postgres;port=5432;database=ensimagcafetdev;username=ensimagcafetdev;password=EnsimagCafetDev
     networks:
       - ensimagcafet-network
-      - proxy-network
     volumes:
       - antiforgery-keys-data:/var/af-keys
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.cafetensimag.rule=Host(`cafet-ensimag.fr`)
-      - traefik.docker.network=proxy-network
-    #  - traefik.http.routers.cafetensimag.entrypoints=websecure
-    #  - traefik.http.routers.cafetensimag.tls.certresolver=cafetensimagresolver
+      - "traefik.enable=true"
+      - "traefik.http.routers.cafetensimag.rule=Host(`cafet-ensimag.fr`)"
+      - "traefik.http.routers.cafetensimag.entrypoints=web"
 
   ensimagcafet.entityframeworkcore.dbmigrator:
     container_name: EnsimagCafet.EntityFrameworkCore.DbMigrator
@@ -81,29 +75,9 @@ services:
       - --api.insecure=true
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
-      - --providers.docker.network=proxy-network
       - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
-      - --certificatesresolvers.cafetensimagresolver.acme.httpchallenge=true
-      - --certificatesresolvers.cafetensimagresolver.acme.httpchallenge.entrypoint=web
-      #- --certificatesresolvers.cafetensimagresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
-      - --certificatesresolvers.cafetensimagresolver.acme.email=contact@cafet-ensimag.fr
-      - --certificatesresolvers.cafetensimagresolver.acme.storage=/letsencrypt/acme.json
     ports:
       - 80:80
-      - 443:443
       - 8080:8080
-    networks:
-      - proxy-network
     volumes:
-      - ./letsencrypt:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock:ro
-
-  #whoami:
-  #  container_name: WhoAmI
-  #  image: traefik/whoami
-  #  labels:
-  #    - traefik.enable=true
-  #    - traefik.http.routers.whoami.rule=Host(`cafet-ensimag.fr`)
-  #    - traefik.http.routers.whoami.entrypoints=websecure
-  #    - traefik.http.routers.whoami.tls.certresolver=cafetensimagresolver
