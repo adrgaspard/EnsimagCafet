@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -78,6 +79,8 @@ builder.Services.AddDataProtection()
 
 // Build the app.
 
+builder.Services.AddCertificateForwarding(options => options.CertificateHeader = "X-Forwarded-Tls-Client-Cert");
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -93,10 +96,9 @@ else
     app.UseHsts();
 }
 app.UseStatusCodePagesWithRedirects("/Error/{0}");
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-//app.Urls.Add("https://*:5001");
 app.Urls.Add("http://*:5000");
 
 // Configure the localization services.
