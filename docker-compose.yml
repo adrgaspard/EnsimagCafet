@@ -33,11 +33,11 @@ services:
       - ensimagcafet-network
     volumes:
     - antiforgery-keys-data:/var/af-keys
-    #labels:
-    #  - traefik.enable=true
-    #  - traefik.http.routers.whoami.rule=Host(`test.cafet-ensimag.fr`)
-    #  - traefik.http.routers.whoami.entrypoints=websecure
-    #  - traefik.http.routers.whoami.tls.certresolver=cafetensimagresolver
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.cafetensimag.rule=Host(`cafet-ensimag.fr`)
+      - traefik.http.routers.cafetensimag.entrypoints=websecure
+    #  - traefik.http.routers.cafetensimag.tls.certresolver=cafetensimagresolver
 
   ensimagcafet.entityframeworkcore.dbmigrator:
     container_name: EnsimagCafet.EntityFrameworkCore.DbMigrator
@@ -96,6 +96,6 @@ services:
     image: traefik/whoami
     labels:
       - traefik.enable=true
-      - traefik.http.routers.whoami.rule=Host(`cafet-ensimag.fr`)
+      - traefik.http.routers.whoami.rule=Host(`whoami.cafet-ensimag.fr`)
       - traefik.http.routers.whoami.entrypoints=websecure
       - traefik.http.routers.whoami.tls.certresolver=cafetensimagresolver
