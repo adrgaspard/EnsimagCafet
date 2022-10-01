@@ -41,10 +41,10 @@ services:
       - ensimagcafet-network
     volumes:
       - antiforgery-keys-data:/var/af-keys
-    labels:
-      #- "traefik.enable=true"
-      #- "traefik.http.routers.cafetensimag.rule=Host(`whoami.cafet-ensimag.fr`)"
-      #- "traefik.http.routers.cafetensimag.entrypoints=web"
+    #labels:
+    #  - "traefik.enable=true"
+    #  - "traefik.http.routers.cafetensimag.rule=Host(`whoami.cafet-ensimag.fr`)"
+    #  - "traefik.http.routers.cafetensimag.entrypoints=web"
 
   ensimagcafet.entityframeworkcore.dbmigrator:
     container_name: EnsimagCafet.EntityFrameworkCore.DbMigrator
