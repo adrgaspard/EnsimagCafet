@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -76,9 +77,21 @@ builder.Services.AddDataProtection()
     .PersistKeysToFileSystem(new (@"/var/af-keys/"))
     .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration{ EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC, ValidationAlgorithm = ValidationAlgorithm.HMACSHA256 });
 
+// Configure header forwarding.
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
+
 // Build the app.
 
 var app = builder.Build();
+
+// Enable header forwarding.
+
+app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline.
 
@@ -91,9 +104,9 @@ else
 {
     app.UseExceptionHandler("/Error/500");
     app.UseHsts();
+    app.UseHttpsRedirection();
 }
 app.UseStatusCodePagesWithRedirects("/Error/{0}");
-//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
