@@ -1,13 +1,16 @@
 version: '3.3'
 
 networks:
-  ensimagcafet.web-network:
+  ensimagcafet-network:
+    name: EnsimagCafet-Network
     driver: bridge
 
 volumes:
   postgres-data:
+    name: EnsimagCafet-PostgresData-Volume
     driver: local
   antiforgery-keys-data:
+    name: EnsimagCafet-AntiforgeryKeysData-Volume
     driver: local
 
 services:
@@ -26,13 +29,14 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       DB_CONNECTION_STRING: host=postgres;port=5432;database=ensimagcafetdev;username=ensimagcafetdev;password=EnsimagCafetDev
     networks:
-      - ensimagcafet.web-network
+      - ensimagcafet-network
     volumes:
     - antiforgery-keys-data:/var/af-keys
     labels:
-    - "traefik.enable=true"
-    - "traefik.http.routers.ensimagcafetweb.rule=Host(`localhost`)"
-    - "traefik.http.routers.ensimagcafetweb.entrypoints=web"
+      - traefik.enable=true
+      - traefik.http.routers.whoami.rule=Host(`cafet-ensimag.fr`)
+      - traefik.http.routers.whoami.entrypoints=websecure
+      - traefik.http.routers.whoami.tls.certresolver=cafetensimagresolver
 
   ensimagcafet.entityframeworkcore.dbmigrator:
     container_name: EnsimagCafet.EntityFrameworkCore.DbMigrator
@@ -45,7 +49,7 @@ services:
     environment:
       DB_CONNECTION_STRING: host=postgres;port=5432;database=ensimagcafetdev;username=ensimagcafetdev;password=EnsimagCafetDev
     networks:
-      - ensimagcafet.web-network
+      - ensimagcafet-network
 
   postgres:
     container_name: Postgres
@@ -58,38 +62,30 @@ services:
       POSTGRES_PASSWORD: EnsimagCafetDev
       POSTGRES_DB: ensimagcafetdev
     networks:
-      - ensimagcafet.web-network
+      - ensimagcafet-network
     volumes:
     - postgres-data:/var/lib/postgresql/data
 
   traefik:
-    image: "traefik:latest"
-    container_name: "traefik"
+    container_name: Traefik
+    image: traefik
+    restart: always
     command:
-      #- "--log.level=DEBUG"
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
-      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
-      #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-      - "--certificatesresolvers.myresolver.acme.email=contact@cafet-ensimag.fr"
-      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      #- --log.level=DEBUG
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.cafetensimagresolver.acme.httpchallenge=true
+      - --certificatesresolvers.cafetensimagresolver.acme.httpchallenge.entrypoint=web
+      #- --certificatesresolvers.cafetensimagresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
+      - --certificatesresolvers.cafetensimagresolver.acme.email=contact@cafet-ensimag.fr
+      - --certificatesresolvers.cafetensimagresolver.acme.storage=/letsencrypt/acme.json
     ports:
-      - "80:80"
-      - "443:443"
-      - "8080:8080"
+      - 80:80
+      - 443:443
+      - 8080:8080
     volumes:
-      - "./letsencrypt:/letsencrypt"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-
-  whoami:
-    image: "traefik/whoami"
-    container_name: "simple-service"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`cafet-ensimag.fr`)"
-      - "traefik.http.routers.whoami.entrypoints=websecure"
-      - "traefik.http.routers.whoami.tls.certresolver=myresolver"
+      - ./letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro
