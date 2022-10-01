@@ -1,7 +1,5 @@
 version: '3.3'
 
-name: ensimagcafet
-
 networks:
   ensimagcafet.web-network:
     driver: bridge
