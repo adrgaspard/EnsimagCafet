@@ -25,6 +25,7 @@ services:
     restart: always
     ports:
     - 5000:5000
+    - 5001:5001
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       DB_CONNECTION_STRING: host=postgres;port=5432;database=ensimagcafetdev;username=ensimagcafetdev;password=EnsimagCafetDev
@@ -37,6 +38,7 @@ services:
       - traefik.http.routers.whoami.rule=Host(`cafet-ensimag.fr`)
       - traefik.http.routers.whoami.entrypoints=websecure
       - traefik.http.routers.whoami.tls.certresolver=cafetensimagresolver
+      - traefik.http.middlewares.test-passtlsclientcert.passtlsclientcert.pem=true
 
   ensimagcafet.entityframeworkcore.dbmigrator:
     container_name: EnsimagCafet.EntityFrameworkCore.DbMigrator
