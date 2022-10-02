@@ -81,8 +81,10 @@ builder.Services.AddDataProtection()
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
-    options.ForwardedHeaders =
-        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.RequireHeaderSymmetry = false;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
 });
 
 // Build the app.
@@ -103,8 +105,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error/500");
-    app.UseHsts();
-    app.UseHttpsRedirection();
 }
 app.UseStatusCodePagesWithRedirects("/Error/{0}");
 app.UseStaticFiles();

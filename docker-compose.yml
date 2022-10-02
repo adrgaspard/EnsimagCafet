@@ -24,7 +24,7 @@ services:
       dockerfile: EnsimagCafet.Web/Dockerfile
     restart: always
     ports:
-      - 5000:80
+      - 2000:80
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:80
