@@ -26,13 +26,32 @@ services:
     ports:
       - 2000:80
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:80
       DB_CONNECTION_STRING: host=postgres;port=5432;database=ensimagcafetdev;username=ensimagcafetdev;password=EnsimagCafetDev
     networks:
       - ensimagcafet-network
     volumes:
       - antiforgery-keys-data:/var/af-keys
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.cafetensimagrouter.rule=Host(`cafet-ensimag.fr`)
+      - traefik.http.routers.cafetensimagrouter.entrypoints=web
+      - traefik.http.routers.cafetensimagrouter.service=ensimagcafetservice
+      - traefik.http.routers.cafetensimagrouter.middlewares=redirecthttps
+
+      - traefik.http.routers.cafetensimagroutersecure.rule=Host(`cafet-ensimag.fr`)
+      - traefik.http.routers.cafetensimagroutersecure.entrypoints=websecure
+      - traefik.http.routers.cafetensimagroutersecure.service=ensimagcafetservice
+      - traefik.http.routers.cafetensimagroutersecure.tls=true
+      - traefik.http.routers.cafetensimagroutersecure.tls.certresolver=myresolver
+
+      - traefik.http.services.ensimagcafetservice.loadbalancer.server.port=80
+
+      - traefik.http.middlewares.redirecthttps.redirectscheme.scheme=https
+      - traefik.http.middlewares.redirecthttps.redirectscheme.permanent=true
+
   ensimagcafet.entityframeworkcore.dbmigrator:
     container_name: EnsimagCafet.EntityFrameworkCore.DbMigrator
     image: ${DOCKER_REGISTRY-}ensimagcafetentityframeworkcoredbmigrator
