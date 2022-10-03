@@ -23,8 +23,6 @@ services:
       context: .
       dockerfile: EnsimagCafet.Web/Dockerfile
     restart: always
-    ports:
-      - 2000:80
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:80
@@ -37,15 +35,15 @@ services:
       - traefik.enable=true
 
       - traefik.http.routers.cafetensimagrouter.rule=Host(`cafet-ensimag.fr`)
-      - traefik.http.routers.cafetensimagrouter.entrypoints=web
+      - traefik.http.routers.cafetensimagrouter.entrypoints=http
       - traefik.http.routers.cafetensimagrouter.service=ensimagcafetservice
       - traefik.http.routers.cafetensimagrouter.middlewares=redirecthttps
 
       - traefik.http.routers.cafetensimagroutersecure.rule=Host(`cafet-ensimag.fr`)
-      - traefik.http.routers.cafetensimagroutersecure.entrypoints=websecure
+      - traefik.http.routers.cafetensimagroutersecure.entrypoints=https
       - traefik.http.routers.cafetensimagroutersecure.service=ensimagcafetservice
       - traefik.http.routers.cafetensimagroutersecure.tls=true
-      - traefik.http.routers.cafetensimagroutersecure.tls.certresolver=myresolver
+      - traefik.http.routers.cafetensimagroutersecure.tls.certresolver=dns-letsencrypt-resolver
 
       - traefik.http.services.ensimagcafetservice.loadbalancer.server.port=80
 
