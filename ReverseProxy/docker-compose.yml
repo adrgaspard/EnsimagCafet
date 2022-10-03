@@ -1,5 +1,10 @@
 version: '3.3'
 
+
+secrets:
+  ovh_application_key:
+    file: ../Secrets/ovh_application_key.secret
+
 services:
   reverse-proxy:
     container_name: Traefik-Reverse-Proxy
@@ -10,10 +15,10 @@ services:
       - 443:443
     restart: always
     environment:
-      OVH_APPLICATION_KEY: 169509b8ec03e148
-      OVH_APPLICATION_SECRET: 69ee66df34bd6b13f2f7862901f1ed56
-      OVH_CONSUMER_KEY: 492e7491803870aa5cd432c4da7ae3cd
-      OVH_ENDPOINT: ovh-eu
+      OVH_APPLICATION_KEY: 
+      OVH_APPLICATION_SECRET: 
+      OVH_CONSUMER_KEY: 
+      OVH_ENDPOINT: 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./letsencrypt:/letsencrypt

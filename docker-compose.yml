@@ -26,7 +26,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:80
-      DB_CONNECTION_STRING: host=postgres;port=5432;database=ensimagcafetdev;username=ensimagcafetdev;password=EnsimagCafetDev
+      DB_CONNECTION_STRING: 
     networks:
       - ensimagcafet-network
     volumes:
@@ -54,7 +54,8 @@ services:
       context: .
       dockerfile: EnsimagCafet.EntityFrameworkCore.DbMigrator/Dockerfile
     environment:
-      DB_CONNECTION_STRING: host=postgres;port=5432;database=ensimagcafetdev;username=ensimagcafetdev;password=EnsimagCafetDev
+      DB_CONNECTION_STRING: 
+      SU_DEFAULT_PASSWORD: 
     networks:
       - ensimagcafet-network
   postgres:

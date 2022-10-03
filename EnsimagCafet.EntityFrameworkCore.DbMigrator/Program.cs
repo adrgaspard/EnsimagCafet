@@ -8,4 +8,4 @@ using var context = new ApplicationDbContextFactory(config).CreateDbContext(Arra
 
 context.Database.Migrate();
 
-new ApplicationDbDataSeeder(new() { SuperUserDefaultPassword = config.GetSection("Seeding").GetSection("SuperUserDefaultPassword").Value }).Seed(context);
+new ApplicationDbDataSeeder(new() { SuperUserDefaultPassword = Environment.GetEnvironmentVariable("SU_DEFAULT_PASSWORD") ?? config.GetSection("Seeding").GetSection("SuperUserDefaultPassword").Value }).Seed(context);
