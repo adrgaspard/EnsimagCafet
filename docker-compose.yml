@@ -49,7 +49,6 @@ services:
 
       - traefik.http.middlewares.redirecthttps.redirectscheme.scheme=https
       - traefik.http.middlewares.redirecthttps.redirectscheme.permanent=true
-
   ensimagcafet.entityframeworkcore.dbmigrator:
     container_name: EnsimagCafet.EntityFrameworkCore.DbMigrator
     image: ${DOCKER_REGISTRY-}ensimagcafetentityframeworkcoredbmigrator
