@@ -26,15 +26,15 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:80
-      DB_CONNECTION_STRING: 
-      SMTP_SENDER_EMAIL: 
-      SMTP_SENDER_NAME: 
-      SMTP_SENDER_PASSWORD: 
-      SMTP_HOST: 
-      SMTP_PORT: 
-      SMTP_USE_SSL: 
-      SMTP_CHECK_CERTIFICATE_REVOCATION: 
-      SMTP_CONTENT_TYPE: 
+      DB_CONNECTION_STRING: null
+      SMTP_SENDER_EMAIL: null
+      SMTP_SENDER_NAME: null
+      SMTP_SENDER_PASSWORD: null
+      SMTP_HOST: null
+      SMTP_PORT: 465
+      SMTP_USE_SSL: true
+      SMTP_CHECK_CERTIFICATE_REVOCATION: false 
+      SMTP_CONTENT_TYPE: Html
     networks:
       - ensimagcafet-network
     volumes:
@@ -62,8 +62,8 @@ services:
       context: .
       dockerfile: EnsimagCafet.EntityFrameworkCore.DbMigrator/Dockerfile
     environment:
-      DB_CONNECTION_STRING: 
-      SU_DEFAULT_PASSWORD: 
+      DB_CONNECTION_STRING: null
+      SU_DEFAULT_PASSWORD: null
     networks:
       - ensimagcafet-network
   postgres:
@@ -73,9 +73,9 @@ services:
       - 5432
     restart: always
     environment:
-      POSTGRES_USER: ensimagcafetdev
-      POSTGRES_PASSWORD: EnsimagCafetDev
-      POSTGRES_DB: ensimagcafetdev
+      POSTGRES_USER: null
+      POSTGRES_PASSWORD: null
+      POSTGRES_DB: null
     networks:
       - ensimagcafet-network
     volumes:
