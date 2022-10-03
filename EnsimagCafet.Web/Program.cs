@@ -3,6 +3,7 @@ using EnsimagCafet.Domain.Shared.Identity;
 using EnsimagCafet.EntityFrameworkCore;
 using EnsimagCafet.MailKit;
 using EnsimagCafet.Web.Authorization;
+using EnsimagCafet.Web.Emailing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
@@ -68,8 +69,32 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 // Add mail services to the container.
 
-builder.Services.AddTransient<IEmailSender, MailKitEmailSender>();
-builder.Services.Configure<MailKitEmailSenderOptions>(builder.Configuration.GetSection(MailKitEmailSenderOptions.MailKitSectionName));
+if (Environment.GetEnvironmentVariable("SMTP_SENDER_EMAIL") is string senderEmail
+    && Environment.GetEnvironmentVariable("SMTP_SENDER_NAME") is string senderName
+    && Environment.GetEnvironmentVariable("SMTP_SENDER_PASSWORD") is string senderPassword
+    && Environment.GetEnvironmentVariable("SMTP_HOST") is string smtpHost
+    && int.TryParse(Environment.GetEnvironmentVariable("SMTP_PORT"), out int smtpPort)
+    && bool.TryParse(Environment.GetEnvironmentVariable("SMTP_USE_SSL"), out bool useSsl)
+    && bool.TryParse(Environment.GetEnvironmentVariable("SMTP_CHECK_CERTIFICATE_REVOCATION"), out bool checkCertificateRevocation)
+    && Enum.TryParse(Environment.GetEnvironmentVariable("SMTP_CONTENT_TYPE"), out MailContentType contentType))
+{
+    builder.Services.AddTransient<IEmailSender, MailKitEmailSender>();
+    builder.Services.Configure<MailKitEmailSenderOptions>(options =>
+    {
+        options.SenderEmail = senderEmail;
+        options.SenderName = senderName;
+        options.SenderPassword = senderPassword;
+        options.SmtpHost = smtpHost;
+        options.SmtpPort = smtpPort;
+        options.UseSsl = useSsl;
+        options.CheckCertificateRevocation = checkCertificateRevocation;
+        options.ContentType = contentType;
+    });
+}
+else
+{
+    builder.Services.AddSingleton<IEmailSender, MockEmailSender>();
+}
 
 // Add data protection to the container.
 
