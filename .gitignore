@@ -354,4 +354,4 @@ MigrationBackup/
 
 # Custom rules
 .vs/*
-ReverseProxy/letsencrypt/acme.json
+Compose/ReverseProxy/letsencrypt/acme.json
