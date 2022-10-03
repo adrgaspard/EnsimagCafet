@@ -26,15 +26,15 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:80
-      DB_CONNECTION_STRING: null
-      SMTP_SENDER_EMAIL: null
-      SMTP_SENDER_NAME: null
-      SMTP_SENDER_PASSWORD: null
-      SMTP_HOST: null
-      SMTP_PORT: 465
-      SMTP_USE_SSL: true
-      SMTP_CHECK_CERTIFICATE_REVOCATION: false 
-      SMTP_CONTENT_TYPE: Html
+      DB_CONNECTION_STRING: SECRET::postgres_connection_string
+      SMTP_SENDER_EMAIL: SECRET::smtp_sender_email
+      SMTP_SENDER_NAME: SECRET::smtp_sender_name
+      SMTP_SENDER_PASSWORD: SECRET::smtp_sender_password
+      SMTP_HOST: SECRET::smtp_host
+      SMTP_PORT: SECRET::smtp_port
+      SMTP_USE_SSL: SECRET::smtp_use_ssl
+      SMTP_CHECK_CERTIFICATE_REVOCATION: SECRET::smtp_check_certificate_revocation
+      SMTP_CONTENT_TYPE: SECRET::smtp_content_type
     networks:
       - ensimagcafet-network
     volumes:
@@ -62,8 +62,8 @@ services:
       context: .
       dockerfile: EnsimagCafet.EntityFrameworkCore.DbMigrator/Dockerfile
     environment:
-      DB_CONNECTION_STRING: null
-      SU_DEFAULT_PASSWORD: null
+      DB_CONNECTION_STRING: SECRET::postgres_connection_string
+      SU_DEFAULT_PASSWORD: SECRET::super_user_default_password
     networks:
       - ensimagcafet-network
   postgres:
@@ -73,9 +73,9 @@ services:
       - 5432
     restart: always
     environment:
-      POSTGRES_USER: null
-      POSTGRES_PASSWORD: null
-      POSTGRES_DB: null
+      POSTGRES_USER: SECRET::postgres_user
+      POSTGRES_PASSWORD: SECRET::postgres_password
+      POSTGRES_DB: SECRET::postgres_database
     networks:
       - ensimagcafet-network
     volumes:

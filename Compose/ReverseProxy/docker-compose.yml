@@ -10,10 +10,10 @@ services:
       - 443:443
     restart: always
     environment:
-      OVH_APPLICATION_KEY: 
-      OVH_APPLICATION_SECRET: 
-      OVH_CONSUMER_KEY: 
-      OVH_ENDPOINT: 
+      OVH_APPLICATION_KEY: SECRET::ovh_application_key
+      OVH_APPLICATION_SECRET: SECRET::ovh_application_secret
+      OVH_CONSUMER_KEY: SECRET::ovh_consumer_key
+      OVH_ENDPOINT: SECRET::ovh_endpoint
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./letsencrypt:/letsencrypt
