@@ -3,7 +3,10 @@ import os
 import re
 
 compose_root = os.path.dirname(os.path.realpath(__file__))
-secrets_root = [y for x in os.walk(compose_root) for y in glob(os.path.join(x[0], "Secrets"))][0]
+secrets_root_array = [y for x in os.walk(compose_root) for y in glob(os.path.join(x[0], "Secrets"))]
+if len(secrets_root_array) is not 1:
+    print("Error: Directory '" + os.path.join(compose_root, "Secrets") + "' not found!")
+secrets_root = secrets_root_array[0]
 compose_files = [y for x in os.walk(compose_root) for y in glob(os.path.join(x[0], "docker-compose.yml"))]
 secrets_files = [y for x in os.walk(secrets_root) for y in glob(os.path.join(x[0], "*.secret"))]
 secrets = dict()
