@@ -9,15 +9,15 @@
     <DockerServiceName>ensimagcafet.web</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="docker-compose.yml" />
-    <None Include=".dockerignore" />
+    <None Include="Secrets\ovh_endpoint.secret" />
+    <None Include="EnsimagCafet\docker-compose.yml" />
+    <None Include="EnsimagCafet\.dockerignore" />
     <None Include="generate-overrides.py" />
     <None Include="ReverseProxy\.dockerignore" />
     <None Include="ReverseProxy\docker-compose.yml" />
     <None Include="Secrets\ovh_application_key.secret" />
     <None Include="Secrets\ovh_application_secret.secret" />
     <None Include="Secrets\ovh_consumer_key.secret" />
-    <None Include="Secrets\ovh_endpoint.secret" />
     <None Include="Secrets\postgres_connection_string.secret" />
     <None Include="Secrets\smtp_sender_email.secret" />
     <None Include="Secrets\smtp_sender_name.secret" />

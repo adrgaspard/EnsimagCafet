@@ -1,6 +1,7 @@
 #!/bin/sh
 
 echo "Generating docker-compose.override files..." \
+&& cd Compose \
 && python3 generate-overrides.py \
 && echo "Starting reverse proxy..." \
 && cd ReverseProxy \
