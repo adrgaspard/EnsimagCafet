@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 from glob import glob
 import os
 import re
@@ -12,7 +10,7 @@ secrets = dict()
 for secret_file in secrets_files:
     key = os.path.basename(os.path.splitext(secret_file)[0])
     with open(secret_file, "r") as reader:
-        secrets[key] = reader.read()   
+        secrets[key] = reader.readline()   
 def replace_secret(match):
     match_value = match.string[match.start():match.end()]
     key = re.sub(r"SECRET::", "", match_value)
@@ -21,7 +19,7 @@ def replace_secret(match):
     return match_value
 for compose_file in compose_files:
     with open(compose_file, "r") as reader:
-        content = reader.readline()
+        content = reader.read()
     content = re.sub(r"SECRET::([a-zA-Z0-9_])+", replace_secret, content)
-    with open(re.sub(r"docker-compose.yml$", "docker-compose.override.yml", compose_file), "w") as writer:
+    with open(re.sub(r"docker-compose.yml$", "docker-compose.generated.yml", compose_file), "w") as writer:
         writer.write(content)

@@ -355,5 +355,5 @@ MigrationBackup/
 # Custom rules
 .vs/*
 Compose/ReverseProxy/letsencrypt/acme.json
-Compose/**/docker-compose.override.yml
+Compose/**/docker-compose.generated.yml
 Compose/Secrets/*.secret
