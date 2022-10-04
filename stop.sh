@@ -1,6 +1,7 @@
 #!/bin/sh
 
-echo "Stopping EnsimagCafet apps..." \
+cd Compose \
+&& echo "Stopping EnsimagCafet apps..." \
 && cd EnsimagCafet \
 && docker compose -f docker-compose.generated.yml down \
 && echo "Stopping reverse proxy..." \
