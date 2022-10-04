@@ -1,0 +1,28 @@
+version: '3.3'
+
+services:
+  reverse-proxy:
+    container_name: Traefik-Reverse-Proxy
+    image: traefik
+    network_mode: host
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    environment:
+      OVH_APPLICATION_KEY: SECRET::ovh_application_key
+      OVH_APPLICATION_SECRET: SECRET::ovh_application_secret
+      OVH_CONSUMER_KEY: SECRET::ovh_consumer_key
+      OVH_ENDPOINT: SECRET::ovh_endpoint
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/letsencrypt
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.http.address=:80
+      - --entrypoints.https.address=:443
+      - --certificatesresolvers.dns-letsencrypt-resolver.acme.dnschallenge=true
+      - --certificatesresolvers.dns-letsencrypt-resolver.acme.dnschallenge.provider=ovh
+      - --certificatesresolvers.dns-letsencrypt-resolver.acme.dnschallenge.delaybeforecheck=0
+      - --certificatesresolvers.dns-letsencrypt-resolver.acme.storage=/letsencrypt/acme.json

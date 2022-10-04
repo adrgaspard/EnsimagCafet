@@ -1,0 +1,82 @@
+version: '3.3'
+
+networks:
+  ensimagcafet-network:
+    name: EnsimagCafet-Network
+    driver: bridge
+
+volumes:
+  postgres-data:
+    name: EnsimagCafet-PostgresData-Volume
+    driver: local
+  antiforgery-keys-data:
+    name: EnsimagCafet-AntiforgeryKeysData-Volume
+    driver: local
+
+services:
+  ensimagcafet.web:
+    container_name: EnsimagCafet.Web
+    image: ${DOCKER_REGISTRY-}ensimagcafetweb
+    depends_on:
+      - postgres
+    build:
+      context: ../..
+      dockerfile: EnsimagCafet.Web/Dockerfile
+    restart: always
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:80
+      DB_CONNECTION_STRING: SECRET::postgres_connection_string
+      SMTP_SENDER_EMAIL: SECRET::smtp_sender_email
+      SMTP_SENDER_NAME: SECRET::smtp_sender_name
+      SMTP_SENDER_PASSWORD: SECRET::smtp_sender_password
+      SMTP_HOST: SECRET::smtp_host
+      SMTP_PORT: SECRET::smtp_port
+      SMTP_USE_SSL: SECRET::smtp_use_ssl
+      SMTP_CHECK_CERTIFICATE_REVOCATION: SECRET::smtp_check_certificate_revocation
+      SMTP_CONTENT_TYPE: SECRET::smtp_content_type
+    networks:
+      - ensimagcafet-network
+    volumes:
+      - antiforgery-keys-data:/var/af-keys
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.ensimagcafet-router-http.rule=Host(`cafet-ensimag.fr`)
+      - traefik.http.routers.ensimagcafet-router-http.entrypoints=http
+      - traefik.http.routers.ensimagcafet-router-http.service=ensimagcafet-service
+      - traefik.http.routers.ensimagcafet-router-http.middlewares=redirect-https
+      - traefik.http.routers.ensimagcafet-router-https.rule=Host(`cafet-ensimag.fr`)
+      - traefik.http.routers.ensimagcafet-router-https.entrypoints=https
+      - traefik.http.routers.ensimagcafet-router-https.service=ensimagcafet-service
+      - traefik.http.routers.ensimagcafet-router-https.tls=true
+      - traefik.http.routers.ensimagcafet-router-https.tls.certresolver=dns-letsencrypt-resolver
+      - traefik.http.services.ensimagcafet-service.loadbalancer.server.port=80
+      - traefik.http.middlewares.redirect-https.redirectscheme.scheme=https
+      - traefik.http.middlewares.redirect-https.redirectscheme.permanent=true
+  ensimagcafet.entityframeworkcore.dbmigrator:
+    container_name: EnsimagCafet.EntityFrameworkCore.DbMigrator
+    image: ${DOCKER_REGISTRY-}ensimagcafetentityframeworkcoredbmigrator
+    depends_on:
+      - postgres
+    build:
+      context: ../..
+      dockerfile: EnsimagCafet.EntityFrameworkCore.DbMigrator/Dockerfile
+    environment:
+      DB_CONNECTION_STRING: SECRET::postgres_connection_string
+      SU_DEFAULT_PASSWORD: SECRET::super_user_default_password
+    networks:
+      - ensimagcafet-network
+  postgres:
+    container_name: Postgres
+    image: postgres
+    expose:
+      - 5432
+    restart: always
+    environment:
+      POSTGRES_USER: SECRET::postgres_user
+      POSTGRES_PASSWORD: SECRET::postgres_password
+      POSTGRES_DB: SECRET::postgres_database
+    networks:
+      - ensimagcafet-network
+    volumes:
+      - postgres-data:/var/lib/postgresql/data

@@ -354,7 +354,6 @@ MigrationBackup/
 
 # Custom rules
 .vs/*
-EnsimagCafet.EntityFrameworkCore.DbMigrator/appsettings.Development.json
-EnsimagCafet.EntityFrameworkCore.DbMigrator/appsettings.Production.json
-EnsimagCafet.Web/appsettings.Development.json
-EnsimagCafet.Web/appsettings.Production.json
+Compose/ReverseProxy/letsencrypt/acme.json
+Compose/**/docker-compose.generated.yml
+Compose/Secrets/*.secret

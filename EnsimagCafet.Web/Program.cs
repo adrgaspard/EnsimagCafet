@@ -3,7 +3,13 @@ using EnsimagCafet.Domain.Shared.Identity;
 using EnsimagCafet.EntityFrameworkCore;
 using EnsimagCafet.MailKit;
 using EnsimagCafet.Web.Authorization;
+using EnsimagCafet.Web.Emailing;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -15,12 +21,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add database services to the container.
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<Role>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+}
+builder.Services.AddIdentity<User, Role>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedAccount = true;
+})
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 // Add domain layer services to the container.
 
@@ -64,19 +77,65 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
 // Add mail services to the container.
 
-builder.Services.AddTransient<IEmailSender, MailKitEmailSender>();
-builder.Services.Configure<MailKitEmailSenderOptions>(builder.Configuration.GetSection(MailKitEmailSenderOptions.MailKitSectionName));
+if (Environment.GetEnvironmentVariable("SMTP_SENDER_EMAIL") is string senderEmail
+    && Environment.GetEnvironmentVariable("SMTP_SENDER_NAME") is string senderName
+    && Environment.GetEnvironmentVariable("SMTP_SENDER_PASSWORD") is string senderPassword
+    && Environment.GetEnvironmentVariable("SMTP_HOST") is string smtpHost
+    && int.TryParse(Environment.GetEnvironmentVariable("SMTP_PORT"), out int smtpPort)
+    && bool.TryParse(Environment.GetEnvironmentVariable("SMTP_USE_SSL"), out bool useSsl)
+    && bool.TryParse(Environment.GetEnvironmentVariable("SMTP_CHECK_CERTIFICATE_REVOCATION"), out bool checkCertificateRevocation)
+    && Enum.TryParse(Environment.GetEnvironmentVariable("SMTP_CONTENT_TYPE"), out MailContentType contentType))
+{
+    builder.Services.AddTransient<IEmailSender, MailKitEmailSender>();
+    builder.Services.Configure<MailKitEmailSenderOptions>(options =>
+    {
+        options.SenderEmail = senderEmail;
+        options.SenderName = senderName;
+        options.SenderPassword = senderPassword;
+        options.SmtpHost = smtpHost;
+        options.SmtpPort = smtpPort;
+        options.UseSsl = useSsl;
+        options.CheckCertificateRevocation = checkCertificateRevocation;
+        options.ContentType = contentType;
+    });
+}
+else
+{
+    builder.Services.AddSingleton<IEmailSender, MockEmailSender>();
+}
+
+// Add data protection to the container.
+
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new (@"/var/af-keys/"))
+    .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration{ EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC, ValidationAlgorithm = ValidationAlgorithm.HMACSHA256 });
+
+// Configure header forwarding.
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.RequireHeaderSymmetry = false;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
+// Configure application cookie.
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.AccessDeniedPath = "/Error/403";
+    options.LoginPath = "/Identity/Login";
+    options.LogoutPath = "/Identity/LogOff";
+});
 
 // Build the app.
 
 var app = builder.Build();
 
-// Add host urls.
+// Enable header forwarding.
 
-foreach (var url in builder.Configuration.GetSection("HostingUrls").Get<string[]>())
-{
-    app.Urls.Add(url);
-}
+app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline.
 
@@ -88,10 +147,8 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error/500");
-    app.UseHsts();
 }
 app.UseStatusCodePagesWithRedirects("/Error/{0}");
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 

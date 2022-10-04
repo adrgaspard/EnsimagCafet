@@ -1,4 +1,5 @@
 ﻿using EnsimagCafet.EntityFrameworkCore.DbMigrator;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 Console.WriteLine("Seeding database...");
@@ -13,6 +14,6 @@ var config = new ConfigurationBuilder()
 
 using var context = new ApplicationDbContextFactory(config).CreateDbContext(Array.Empty<string>());
 
-new ApplicationDbDataSeeder(new() { SuperUserDefaultPassword = config.GetSection("Seeding").GetSection("SuperUserDefaultPassword").Value }).Seed(context);
+context.Database.Migrate();
 
-Console.WriteLine("Database seeded !");
+new ApplicationDbDataSeeder(new() { SuperUserDefaultPassword = Environment.GetEnvironmentVariable("SU_DEFAULT_PASSWORD") ?? config.GetSection("Seeding").GetSection("SuperUserDefaultPassword").Value }).Seed(context);
