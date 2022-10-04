@@ -21,17 +21,23 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\EnsimagCafet.Domain.Shared\EnsimagCafet.Domain.Shared.csproj" />
-    <ProjectReference Include="..\EnsimagCafet.EntityFrameworkCore\EnsimagCafet.EntityFrameworkCore.csproj" />
-    <ProjectReference Include="..\EnsimagCafet.MailKit\EnsimagCafet.MailKit.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\EnsimagCafet.Domain.Shared\EnsimagCafet.Domain.Shared.csproj" />
+		<ProjectReference Include="..\EnsimagCafet.EntityFrameworkCore\EnsimagCafet.EntityFrameworkCore.csproj" />
+		<ProjectReference Include="..\EnsimagCafet.MailKit\EnsimagCafet.MailKit.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Update="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+	<ItemGroup>
+		<Content Update="appsettings.Development.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="appsettings.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Update="appsettings.Production.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 
   <ItemGroup>
     <None Remove="..\.dockerignore" />
