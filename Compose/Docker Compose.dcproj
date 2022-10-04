@@ -14,8 +14,22 @@
     <None Include="generate-overrides.py" />
     <None Include="ReverseProxy\.dockerignore" />
     <None Include="ReverseProxy\docker-compose.yml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Secrets\" />
+    <None Include="Secrets\ovh_application_key.secret" />
+    <None Include="Secrets\ovh_application_secret.secret" />
+    <None Include="Secrets\ovh_consumer_key.secret" />
+    <None Include="Secrets\ovh_endpoint.secret" />
+    <None Include="Secrets\postgres_connection_string.secret" />
+    <None Include="Secrets\smtp_sender_email.secret" />
+    <None Include="Secrets\smtp_sender_name.secret" />
+    <None Include="Secrets\smtp_sender_password.secret" />
+    <None Include="Secrets\smtp_host.secret" />
+    <None Include="Secrets\smtp_port.secret" />
+    <None Include="Secrets\smtp_use_ssl.secret" />
+    <None Include="Secrets\smtp_check_certificate_revocation.secret" />
+    <None Include="Secrets\smtp_content_type.secret" />
+    <None Include="Secrets\super_user_default_password.secret" />
+    <None Include="Secrets\postgres_user.secret" />
+    <None Include="Secrets\postgres_password.secret" />
+    <None Include="Secrets\postgres_database.secret" />
   </ItemGroup>
 </Project>
