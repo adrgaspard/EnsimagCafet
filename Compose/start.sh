@@ -6,6 +6,7 @@ echo "Starting reverse proxy..."
 cd ReverseProxy
 docker compose -f docker-compose.generated.yml -p reverseproxy up --build -d
 echo "Starting EnsimagCafet apps..."
-cd ..
+cd ../EnsimagCafet
 docker compose -f docker-compose.generated.yml -p ensimagcafet up --build -d
 echo "Finished!"
+cd ..

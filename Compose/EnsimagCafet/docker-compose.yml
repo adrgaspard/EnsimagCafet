@@ -20,7 +20,7 @@ services:
     depends_on:
       - postgres
     build:
-      context: .
+      context: ../..
       dockerfile: EnsimagCafet.Web/Dockerfile
     restart: always
     environment:
@@ -59,7 +59,7 @@ services:
     depends_on:
       - postgres
     build:
-      context: .
+      context: ../..
       dockerfile: EnsimagCafet.EntityFrameworkCore.DbMigrator/Dockerfile
     environment:
       DB_CONNECTION_STRING: SECRET::postgres_connection_string
