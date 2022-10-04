@@ -10,7 +10,7 @@ secrets = dict()
 for secret_file in secrets_files:
     key = os.path.basename(os.path.splitext(secret_file)[0])
     with open(secret_file, "r") as reader:
-        secrets[key] = reader.readline()   
+        secrets[key] = reader.readline().strip()
 def replace_secret(match):
     match_value = match.string[match.start():match.end()]
     key = re.sub(r"SECRET::", "", match_value)
