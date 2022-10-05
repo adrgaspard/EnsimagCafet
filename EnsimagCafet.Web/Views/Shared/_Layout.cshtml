@@ -7,9 +7,10 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
     <link rel="stylesheet" href="~/metronic-assets/plugins/global/plugins.bundle.css">
     <link rel="stylesheet" href="~/metronic-assets/css/style.bundle.css">
+    <link rel="stylesheet" href="~/css/custom.css">
     <script src="https://kit.fontawesome.com/40beaa7130.js" crossorigin="anonymous"></script>
 </head>
-<body id="kt_app_body" class="app-default" data-kt-app-page-loading-enabled="true" data-kt-app-page-loading="on">
+<body id="kt_app_body" class="app-default d-flex" data-kt-app-page-loading-enabled="true" data-kt-app-page-loading="on">
     <script>
         var defaultThemeMode = "dark";
         var themeMode;
@@ -32,28 +33,42 @@
     <div class="d-flex flex-column flex-root">
         <div class="page d-flex flex-row flex-column-fluid">
             <div class="wrapper d-flex flex-column flex-row-fluid" id="kt_wrapper">
-                <header id="kt_header" class="header align-items-stretch" data-kt-sticky="true" data-kt-sticky-name="header" data-kt-sticky-offset="{default: '200px', lg: '300px'}">
-                    <div class="container-xxl d-flex align-items-center">
-                        <nav class="navbar navbar-expand-lg">
-                            <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">EnsimagCafet.Web</a>
-                            <a asp-area="" asp-controller="Home" asp-action="Index" class="mx-1 px-4 btn btn-active-light-primary btn-custom btn-text-light">Home</a>
-                            <a asp-area="" asp-controller="Home" asp-action="Privacy" class="mx-1 px-4 btn btn-active-light-primary btn-custom btn-text-light">Privacy</a>
-                            <a asp-area="" asp-controller="Home" asp-action="Bootstrap" class="mx-1 px-4 btn btn-active-light-primary btn-custom btn-text-light">Bootstrap</a>
-                            <partial name="_LoginPartial" />
-                            <partial name="_CulturePartial" />
-                            <partial name="_ThemePartial" />
-                        </nav>
-                    </div>
+                <header>
+                    <nav class="navbar navbar-expand-lg navbar-dark bg-transparent py-4 border-bottom">
+                        <div class="container-fluid">
+                            <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">Cafet' Ensimag</a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#headerNavbarContent" aria-controls="headerNavbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="headerNavbarContent">
+                                <ul class="navbar-nav me-auto flex-grow-1">
+                                    <li class="nav-item">
+                                        <a asp-area="" asp-controller="Home" asp-action="Bootstrap" class="mx-1 px-4 btn btn-active-light-primary btn-custom btn-text-light">Bootstrap</a>
+                                    </li>
+                                </ul>
+                                <div>
+                                    <partial name="_LoginPartial" />
+                                </div>
+                                <ul class="navbar-nav me-auto flex-row mx-2">
+                                    <li class="nav-item">
+                                        <partial name="_CulturePartial" />
+                                    </li>
+                                    <li class="nav-item">
+                                        <partial name="_ThemePartial" />
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
                 </header>
                 <div class="container">
-                    <main role="main" class="pb-3">
+                    <main role="main" class="py-3">
                         @RenderBody()
                     </main>
                 </div>
-
                 <footer class="border-top footer text-muted">
                     <div class="container">
-                        &copy; 2022 - EnsimagCafet.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        &copy; 2022 - Cafet' Ensimag - Gaspard Andrieu
                     </div>
                 </footer>
             </div>
