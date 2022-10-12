@@ -1,10 +1,73 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.Localization
+@using EnsimagCafet.Domain.Identity
+@inject SignInManager<User> SignInManager
 @inject IViewLocalizer loc
 @{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
+@*<div class="text-center">
     <h1 class="display-4">@loc["HelloWorld"]</h1>
     <h1 class="display-4">@ViewData["Test"]</h1>
+</div>*@
+<div class="row">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div class="col-md-4">
+            <div class="card card-custom gutter-b">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="card-label">Balance</h2>
+                    </div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <p>You have currently</p>
+                    <h1 class="align-self-center">18.10 EUR</h1>
+                    <div class="card-footer">
+                        <p>To refund your account, ask a master.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card card-custom gutter-b">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="card-label">Balance</h2>
+                    </div>
+                </div>
+                <div class="card-body">
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="col-md-4">
+            <div class="card card-custom gutter-b">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="card-label">Account informations</h2>
+                    </div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h1 class="align-self-center text-xxl-center">Balance: 18.10 EUR</h1>
+                    <p>To refun your account, please ask a master to do it. The accepted payment methods car Lydia and cash.</p>
+                    <hr />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card card-custom gutter-b">
+                <div class="card-header">
+                    <div class="card-title">
+                        <h2 class="card-label"></h2>
+                    </div>
+                </div>
+                <div class="card-body">
+                </div>
+            </div>
+        </div>
+    }
 </div>

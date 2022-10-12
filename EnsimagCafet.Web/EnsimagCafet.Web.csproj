@@ -22,6 +22,9 @@
   </ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\APITools.EntityFrameworkCore\APITools.EntityFrameworkCore.csproj" />
+		<ProjectReference Include="..\EnsimagCafet.Application.Contracts\EnsimagCafet.Application.Contracts.csproj" />
+		<ProjectReference Include="..\EnsimagCafet.Application\EnsimagCafet.Application.csproj" />
 		<ProjectReference Include="..\EnsimagCafet.Domain.Shared\EnsimagCafet.Domain.Shared.csproj" />
 		<ProjectReference Include="..\EnsimagCafet.EntityFrameworkCore\EnsimagCafet.EntityFrameworkCore.csproj" />
 		<ProjectReference Include="..\EnsimagCafet.MailKit\EnsimagCafet.MailKit.csproj" />

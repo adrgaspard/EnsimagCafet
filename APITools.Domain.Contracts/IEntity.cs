@@ -1,4 +1,6 @@
-﻿namespace APITools.Domain.Contracts
+﻿using System;
+
+namespace APITools.Domain.Contracts
 {
     public interface IEntity
     {

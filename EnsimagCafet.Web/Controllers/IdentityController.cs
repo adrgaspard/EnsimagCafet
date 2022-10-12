@@ -1,4 +1,5 @@
-﻿using EnsimagCafet.Domain.Identity;
+﻿using APITools.CommonTools;
+using EnsimagCafet.Domain.Identity;
 using EnsimagCafet.Web.Models.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -82,17 +83,22 @@ namespace EnsimagCafet.Web.Controllers
             if (ModelState.IsValid)
             {
                 model.Email = model.Email.ToLower();
-                var user = new User { UserName = model.Email.Split('@').First(), Email = model.Email };
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                var userResult = Domain.Identity.User.Instanciate(model.Email, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+                if (userResult)
                 {
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var callbackUrl = Url.Action("ConfirmEmail", "Identity", new { userId = user.Id, code }, protocol: HttpContext.Request.Scheme);
-                    await _emailSender.SendEmailAsync(model.Email, "Confirm your account", "Please confirm your account by clicking this link: <a href=\"" + callbackUrl + "\">link</a>");
-                    _logger.LogInformation(3, "User created a new account with password.");
-                    return View("VerifyEmail");
+                    var user = userResult.Value;
+                    var result = await _userManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
+                    {
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var callbackUrl = Url.Action("ConfirmEmail", "Identity", new { userId = user.Id, code }, protocol: HttpContext.Request.Scheme);
+                        await _emailSender.SendEmailAsync(model.Email, "Confirm your account", "Please confirm your account by clicking this link: <a href=\"" + callbackUrl + "\">link</a>");
+                        _logger.LogInformation(3, "User created a new account with password.");
+                        return View("VerifyEmail");
+                    }
+                    AddErrors(result);
                 }
-                AddErrors(result);
+                AddErrors(userResult);
             }
             return View("Register", model);
         }
@@ -351,6 +357,21 @@ namespace EnsimagCafet.Web.Controllers
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+
+        private void AddErrors(Result result)
+        {
+            if (result.Exception is CompositeException compositeException)
+            {
+                foreach (var subException in compositeException.InnerExceptions)
+                {
+                    ModelState.AddModelError(string.Empty, subException.Message);
+                }
+            }
+            else if (result.Exception is Exception exception)
+            {
+                ModelState.AddModelError(string.Empty, exception.Message);
             }
         }
 

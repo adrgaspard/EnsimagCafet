@@ -21,19 +21,19 @@ namespace EnsimagCafet.EntityFrameworkCore.DbMigrator
             {
                 if (context.Roles.FirstOrDefault(role => role.Id == AdminRoleId) is null)
                 {
-                    _ = context.Roles.Add(new() { Id = AdminRoleId, Name = AdminRoleName, NormalizedName = AdminRoleName.ToUpper() });
+                    _ = context.Roles.Add(Role.Instanciate(AdminRoleId, AdminRoleName).Value);
                 }
                 if (context.Roles.FirstOrDefault(role => role.Id == MasterRoleId) is null)
                 {
-                    _ = context.Roles.Add(new() { Id = MasterRoleId, Name = MasterRoleName, NormalizedName = MasterRoleName.ToUpper() });
+                    _ = context.Roles.Add(Role.Instanciate(MasterRoleId, MasterRoleName).Value);
                 }
                 if (context.Roles.FirstOrDefault(role => role.Id == ManagerRoleId) is null)
                 {
-                    _ = context.Roles.Add(new() { Id = ManagerRoleId, Name = ManagerRoleName, NormalizedName = ManagerRoleName.ToUpper() });
+                    _ = context.Roles.Add(Role.Instanciate(ManagerRoleId, ManagerRoleName).Value);
                 }
                 if (context.Roles.FirstOrDefault(role => role.Id == CustomerRoleId) is null)
                 {
-                    _ = context.Roles.Add(new() { Id = CustomerRoleId, Name = CustomerRoleName, NormalizedName = CustomerRoleName.ToUpper() });
+                    _ = context.Roles.Add(Role.Instanciate(CustomerRoleId, CustomerRoleName).Value);
                 }
             }
             if (_options.ChecksSuperUser)
@@ -43,21 +43,13 @@ namespace EnsimagCafet.EntityFrameworkCore.DbMigrator
                     if (context.Users.FirstOrDefault(user => user.Id == SuperUserId) is null)
                     {
                         PasswordHasher<User> passwordHasher = new();
-                        User user = new()
-                        {
-                            Id = SuperUserId,
-                            UserName = SuperUserUserName,
-                            NormalizedUserName = SuperUserUserName.ToUpper(),
-                            Email = SuperUserEmail,
-                            NormalizedEmail = SuperUserEmail.ToUpper(),
-                            SecurityStamp = string.Concat(Array.ConvertAll(Guid.NewGuid().ToByteArray(), b => b.ToString("X2")))
-                        };
-                        user.PasswordHash = passwordHasher.HashPassword(user, _options.SuperUserDefaultPassword);
+                        User user = User.Instanciate(SuperUserId, SuperUserUserName, "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX").Value;
+                        user.SetPasswordHash(passwordHasher.HashPassword(user, _options.SuperUserDefaultPassword));
                         _ = context.Users.Add(user);
-                        _ = context.UserRoles.Add(new() { UserId = SuperUserId, RoleId = AdminRoleId });
-                        _ = context.UserRoles.Add(new() { UserId = SuperUserId, RoleId = MasterRoleId });
-                        _ = context.UserRoles.Add(new() { UserId = SuperUserId, RoleId = ManagerRoleId });
-                        _ = context.UserRoles.Add(new() { UserId = SuperUserId, RoleId = CustomerRoleId });
+                        _ = context.UserRoles.Add(UserRole.Instanciate(SuperUserId, AdminRoleId).Value);
+                        _ = context.UserRoles.Add(UserRole.Instanciate(SuperUserId, MasterRoleId).Value);
+                        _ = context.UserRoles.Add(UserRole.Instanciate(SuperUserId, ManagerRoleId).Value);
+                        _ = context.UserRoles.Add(UserRole.Instanciate(SuperUserId, CustomerRoleId).Value);
                     }
                 }
             }

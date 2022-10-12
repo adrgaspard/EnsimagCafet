@@ -1,3 +1,7 @@
+using APITools.Domain.Contracts;
+using APITools.EntityFrameworkCore;
+using EnsimagCafet.Application;
+using EnsimagCafet.Application.Contracts;
 using EnsimagCafet.Domain.Identity;
 using EnsimagCafet.Domain.Shared.Identity;
 using EnsimagCafet.EntityFrameworkCore;
@@ -23,6 +27,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddScoped<IDbContextProvider, SingletonDbContextProvider<ApplicationDbContext>>();
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -37,7 +42,11 @@ builder.Services.AddIdentity<User, Role>(options =>
 
 // Add domain layer services to the container.
 
+builder.Services.AddScoped<IRepository<User, Guid>, EFCoreRepository<User, Guid>>();
+
 // Add application layer services to the container.
+
+builder.Services.AddScoped<IUserBalanceService, UserBalanceService>();
 
 // Add MVC services to the container.
 
@@ -108,7 +117,7 @@ else
 
 builder.Services.AddDataProtection()
     .PersistKeysToFileSystem(new (@"/var/af-keys/"))
-    .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration{ EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC, ValidationAlgorithm = ValidationAlgorithm.HMACSHA256 });
+    .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration { EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC, ValidationAlgorithm = ValidationAlgorithm.HMACSHA256 });
 
 // Configure header forwarding.
 

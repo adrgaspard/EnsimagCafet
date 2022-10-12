@@ -23,6 +23,26 @@
             return Error(exception);
         }
 
+        public static bool operator true(Result result)
+        {
+            return result.IsSuccess;
+        }
+
+        public static bool operator false(Result result)
+        {
+            return !result.IsSuccess;
+        }
+
+        public static Result operator &(Result first, Result second)
+        {
+            return first.IsSuccess ? second : first;
+        }
+
+        public static Result operator |(Result first, Result second)
+        {
+            return first || second ? Success() : Error(new CompositeException(new List<Exception>(2) { first.Exception, second.Exception }));
+        }
+
         public static Result Success()
         {
             return SuccessInstance;

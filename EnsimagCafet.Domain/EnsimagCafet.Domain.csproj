@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\APITools.Domain.Contracts\APITools.Domain.Contracts.csproj" />
+    <ProjectReference Include="..\APITools.Domain\APITools.Domain.csproj" />
+    <ProjectReference Include="..\EnsimagCafet.Domain.Shared\EnsimagCafet.Domain.Shared.csproj" />
   </ItemGroup>
 
 </Project>
